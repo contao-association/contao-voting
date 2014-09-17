@@ -62,20 +62,23 @@ class ModuleVotingEnquiryList extends Module
      */
     protected function compile()
     {
-        $objEnquiries = $this->Database->prepare("SELECT * FROM tl_voting_enquiry WHERE pid=(SELECT id FROM tl_voting WHERE alias=?" . (!BE_USER_LOGGED_IN ? " AND published=1" : "") . ") ORDER BY sorting")
-                                       ->execute($this->Input->get('items'));
+        $objVoting = $this->Database->prepare("SELECT * FROM tl_voting WHERE alias=?" . (!BE_USER_LOGGED_IN ? " AND published=1" : ""))
+                                    ->limit(1)
+                                    ->executeUncached($this->Input->get('items'));
 
-        if (!$objEnquiries->numRows) {
+        if (!$objVoting->numRows) {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($GLOBALS['objPage']->id);
         }
+
+        $objEnquiries = $this->Database->prepare("SELECT * FROM tl_voting_enquiry WHERE pid=? ORDER BY sorting")
+                                       ->execute($objVoting->id);
 
         $strUrl = '';
 
         // Get the jumpTo page
         if ($this->jumpTo > 0) {
             $objJump = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
-                                      ->limit(1)
                                       ->execute($this->jumpTo);
 
             if ($objJump->numRows) {
@@ -83,7 +86,7 @@ class ModuleVotingEnquiryList extends Module
             }
         }
 
-        $blnCanVote = $this->canUserVote($objEnquiries->pid);
+        $blnCanVote = $this->canUserVote($objVoting);
 
         // Setup form variables
         if ($blnCanVote) {
@@ -174,22 +177,20 @@ class ModuleVotingEnquiryList extends Module
 
     /**
      * Return true if the user can vote
-     * @param integer
-     * @return boolean
+     *
+     * @param \Database_Result $objVoting
+     *
+     * @return bool
      */
-    protected function canUserVote($intVoting)
+    protected function canUserVote($objVoting)
     {
         if (!FE_USER_LOGGED_IN) {
             return false;
         }
 
         $time = time();
-        $objVoting = $this->Database->prepare("SELECT * FROM tl_voting WHERE id=? AND start!='' AND stop!='' AND start<? AND stop>?")
-                                    ->limit(1)
-                                    ->executeUncached($intVoting, $time, $time);
 
-        // The voting time expired
-        if (!$objVoting->numRows) {
+        if ($objVoting->start > $time || $objVoting->stop < $time) {
             return false;
         }
 
@@ -198,12 +199,11 @@ class ModuleVotingEnquiryList extends Module
             return false;
         }
 
-        $objVoted = $this->Database->prepare("SELECT id FROM tl_voting_registry WHERE voting=? AND member=?")
-                                   ->limit(1)
+        $objVoted = $this->Database->prepare("SELECT COUNT(*) AS votes FROM tl_voting_registry WHERE voting=? AND member=?")
                                    ->executeUncached($objVoting->id, $this->User->id);
 
         // User already voted before
-        if ($objVoted->numRows) {
+        if ($objVoted->votes > 0) {
             return false;
         }
 
