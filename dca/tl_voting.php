@@ -141,14 +141,14 @@ $GLOBALS['TL_DCA']['tl_voting'] = array
             'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['start'],
             'exclude'                 => true,
             'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard')
+            'eval'                    => array('mandatory'=>true, 'rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard')
         ),
         'stop' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['stop'],
             'exclude'                 => true,
             'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard')
+            'eval'                    => array('mandatory'=>true, 'rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard')
         ),
     )
 );
