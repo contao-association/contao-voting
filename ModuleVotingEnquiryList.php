@@ -48,6 +48,8 @@ class ModuleVotingEnquiryList extends Module
 
         // Throw a 404 page if no item has been specified
         if (!$this->Input->get('items')) {
+
+            /** @type \PageError404 $objHandler */
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($GLOBALS['objPage']->id);
         }
@@ -67,6 +69,8 @@ class ModuleVotingEnquiryList extends Module
                                     ->executeUncached($this->Input->get('items'));
 
         if (!$objVoting->numRows) {
+
+            /** @type \PageError404 $objHandler */
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($GLOBALS['objPage']->id);
         }
@@ -130,48 +134,34 @@ class ModuleVotingEnquiryList extends Module
                     }
                 }
 
-                $arrWidgets[$strWidget] = $objWidget;
+                $arrWidgets[$objEnquiries->id] = $objWidget;
                 $arrEnquiries[$objEnquiries->id]['widget'] = $objWidget;
             }
         }
 
-        $this->Template->enquiries = $arrEnquiries;
-        $this->Template->canVote = $blnCanVote;
-
-        if (!$blnCanVote) {
-            return;
-        }
-
-        $this->Template->formId = $strFormId;
-        $this->Template->action = ampersand($this->Environment->request);
-        $this->Template->submit = specialchars($GLOBALS['TL_LANG']['MSC']['voting_vote']);
-        $this->Template->widgets = $arrWidgets;
-
         // Process the voting
-        if ($this->Input->post('FORM_SUBMIT') == $strFormId && !$doNotSubmit) {
+        if ($blnCanVote && !$doNotSubmit && $this->Input->post('FORM_SUBMIT') == $strFormId) {
 
             $this->Database->lockTables(
                 array(
-                    'tl_voting_vote'     => 'WRITE',
+                    'tl_voting_enquiry'  => 'WRITE',
                     'tl_voting_registry' => 'WRITE'
                 )
             );
 
             // Check voting status again after tables are locked
             if ($this->canUserVote($objVoting)) {
-                foreach ($arrWidgets as $objWidget) {
+                foreach ($arrWidgets as $intEnquiry => $objWidget) {
 
                     // Do not insert vote record if use chose abstention
                     if ($objWidget->value != 'yes' && $objWidget->value != 'no') {
                         continue;
                     }
 
-                    $intEnquiry = intval(str_replace('enquiry_', '', $objWidget->name));
-                    $intVote = ($objWidget->value == 'yes') ? 1 : 0;
+                    $strField = ($objWidget->value == 'yes') ? 'ayes' : 'nays';
 
-                    $this->Database->prepare("INSERT INTO tl_voting_vote %s")
-                                   ->set(array('enquiry' => $intEnquiry, 'vote' => $intVote))
-                                   ->execute();
+                    $this->Database->prepare("UPDATE tl_voting_enquiry SET $strField=($strField+1) WHERE id=?")
+                                   ->execute($intEnquiry);
                 }
 
                 // Store the voting in registry
@@ -183,6 +173,12 @@ class ModuleVotingEnquiryList extends Module
             $this->Database->unlockTables();
             $this->reload();
         }
+
+        $this->Template->enquiries = $arrEnquiries;
+        $this->Template->canVote = $blnCanVote;
+        $this->Template->formId = $strFormId;
+        $this->Template->action = ampersand($this->Environment->request);
+        $this->Template->submit = specialchars($GLOBALS['TL_LANG']['MSC']['voting_vote']);
     }
 
     /**

@@ -42,6 +42,8 @@ CREATE TABLE `tl_voting_enquiry` (
   `teaser` text NULL,
   `description` mediumtext NULL,
   `attachments` blob NULL,
+  `ayes` smallint(5) unsigned NOT NULL default '0',
+  `nays` smallint(5) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `pid` (`pid`),
   KEY `alias` (`alias`)
@@ -61,16 +63,4 @@ CREATE TABLE `tl_voting_registry` (
   PRIMARY KEY  (`id`),
   KEY `voting` (`voting`),
   KEY `member` (`member`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table `tl_voting_vote`
---
-
-CREATE TABLE `tl_voting_vote` (
-  `enquiry` int(10) unsigned NOT NULL default '0',
-  `vote` tinyint(1) unsigned NOT NULL default '0',
-  KEY `enquiry` (`enquiry`),
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

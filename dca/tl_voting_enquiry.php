@@ -146,9 +146,12 @@ class tl_voting_enquiry extends Backend
 
     /**
      * Auto-generate the enquiry alias if it has not been set yet
-     * @param mixed
-     * @param DataContainer
+     *
+     * @param mixed         $varValue
+     * @param DataContainer $dc
+     *
      * @return string
+     * @throws Exception
      */
     public function generateAlias($varValue, DataContainer $dc)
     {
@@ -178,18 +181,13 @@ class tl_voting_enquiry extends Backend
 
     /**
      * List the enquiries
-     * @param array
+     *
+     * @param array $arrRow
+     *
      * @return string
      */
     public function listEnquiries($arrRow)
     {
-        $objVotes = $this->Database->prepare("SELECT
-                COUNT(*) AS total,
-                (SELECT COUNT(*) FROM tl_voting_vote WHERE enquiry=v1.enquiry AND vote=0) AS no,
-                (SELECT COUNT(*) FROM tl_voting_vote WHERE enquiry=v1.enquiry AND vote=1) AS yes
-            FROM tl_voting_vote v1 WHERE enquiry=?")
-        ->execute($arrRow['id']);
-
         return '<div>
 <h4>' . $arrRow['name'] . '</h4>
 ' . $arrRow['teaser'] . '
@@ -199,16 +197,16 @@ class tl_voting_enquiry extends Backend
             <td class="tl_folder_tlist" colspan="2">' . $GLOBALS['TL_LANG']['MSC']['voting_summary'] . '</td>
         </tr>
         <tr>
-            <td class="tl_file_list tl_red">' . $GLOBALS['TL_LANG']['MSC']['voting_options']['no'] . '</td>
-            <td class="tl_file_list tl_red">' . $objVotes->no . '</td>
+            <td class="tl_file_list tl_green">' . $GLOBALS['TL_LANG']['MSC']['voting_options']['yes'] . '</td>
+            <td class="tl_file_list tl_green">' . $arrRow['ayes'] . '</td>
         </tr>
         <tr>
-            <td class="tl_file_list tl_green">' . $GLOBALS['TL_LANG']['MSC']['voting_options']['yes'] . '</td>
-            <td class="tl_file_list tl_green">' . $objVotes->yes . '</td>
+            <td class="tl_file_list tl_red">' . $GLOBALS['TL_LANG']['MSC']['voting_options']['no'] . '</td>
+            <td class="tl_file_list tl_red">' . $arrRow['nays'] . '</td>
         </tr>
         <tr>
             <td class="tl_file_list"><strong>' . $GLOBALS['TL_LANG']['MSC']['voting_total'] . '</td>
-            <td class="tl_file_list"><strong>' . $objVotes->total . '</td>
+            <td class="tl_file_list"><strong>' . ($arrRow['ayes'] + $arrRow['nays']) . '</td>
         </tr>
     </tbody>
 </table>
