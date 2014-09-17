@@ -71,6 +71,6 @@ CREATE TABLE `tl_voting_registry` (
 
 CREATE TABLE `tl_voting_vote` (
   `enquiry` int(10) unsigned NOT NULL default '0',
-  `vote` smallint(1) unsigned NOT NULL default '0',
+  `vote` tinyint(1) unsigned NOT NULL default '0',
   KEY `enquiry` (`enquiry`),
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
