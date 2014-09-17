@@ -1,0 +1,26 @@
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+
+    <?php if ($this->headline): ?>
+    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+    <?php endif; ?>
+
+    <h1><?php echo $this->name; ?></h1>
+
+    <div class="description">
+        <?php echo $this->description; ?>
+    </div>
+
+    <?php if ($this->attachments): ?>
+    <div class="attachments">
+        <?php foreach ($this->attachments as $attachment): ?>
+        <div class="attachment">
+            <img src="<?php echo $attachment['icon']; ?>" width="18" height="18" alt="<?php echo $attachment['mime']; ?>" class="mime_icon"> <a href="<?php echo $attachment['href']; ?>" title="<?php echo $attachment['title']; ?>"><?php echo $attachment['link']; ?> <span class="size">(<?php echo $attachment['filesize']; ?>)</span></a>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+
+</div>
+<!-- indexer::continue -->

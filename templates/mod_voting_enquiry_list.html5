@@ -1,0 +1,51 @@
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+
+    <?php if ($this->headline): ?>
+    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+    <?php endif; ?>
+
+    <?php if ($this->enquiries): ?>
+
+    <?php if ($this->canVote): ?>
+    <form action="<?php echo $this->action; ?>" id="<?php echo $this->formId; ?>" method="post">
+        <div class="formbody">
+            <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formId; ?>">
+            <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+    <?php endif; ?>
+
+    <div class="enquiries">
+        <?php foreach ($this->enquiries as $enquiry): ?>
+        <div class="enquiry<?php echo $enquiry['class']; ?>">
+            <h4><a href="<?php echo $enquiry['href']; ?>" title="<?php echo $enquiry['linkTitle']; ?>" target="_blank"><?php echo $enquiry['name']; ?></a></h4>
+
+            <div class="teaser">
+                <?php echo $enquiry['teaser']; ?>
+            </div>
+
+            <p class="more">
+                <a href="<?php echo $enquiry['href']; ?>" title="<?php echo $enquiry['moreTitle']; ?>" target="_blank"><?php echo $enquiry['more']; ?></a>
+            </p>
+
+            <?php if ($this->canVote): ?>
+            <div class="widget">
+                <?php echo $enquiry['widget']->parse(); ?>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if ($this->canVote): ?>
+            <div class="submit_container">
+                <input type="submit" class="submit" value="<?php echo $this->submit; ?>">
+            </div>
+        </div>
+    </form>
+    <?php endif; ?>
+
+    <?php endif; ?>
+
+</div>
+<!-- indexer::continue -->

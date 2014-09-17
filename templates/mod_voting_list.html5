@@ -1,0 +1,20 @@
+
+<!-- indexer::stop -->
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+
+    <?php if ($this->headline): ?>
+    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
+    <?php endif; ?>
+
+    <?php if ($this->votings): ?>
+    <div class="voting">
+        <?php foreach ($this->votings as $voting): ?>
+        <div class="vote<?php echo $voting['class']; ?>">
+            <h4><a href="<?php echo $voting['href']; ?>" title="<?php echo $voting['linkTitle']; ?>"><?php echo $voting['name']; ?></a></h4>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+
+</div>
+<!-- indexer::continue -->
