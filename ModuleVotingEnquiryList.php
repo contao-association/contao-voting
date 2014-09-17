@@ -89,11 +89,9 @@ class ModuleVotingEnquiryList extends Module
         $blnCanVote = $this->canUserVote($objVoting);
 
         // Setup form variables
-        if ($blnCanVote) {
-            $doNotSubmit = false;
-            $strFormId = 'voting_' . $this->id;
-            $arrWidgets = array();
-        }
+        $doNotSubmit = false;
+        $strFormId = 'voting_' . $this->id;
+        $arrWidgets = array();
 
         $limit = $objEnquiries->numRows;
         $count = 0;
@@ -113,6 +111,7 @@ class ModuleVotingEnquiryList extends Module
             if ($blnCanVote) {
                 $strWidget = 'enquiry_' . $objEnquiries->id;
 
+                /** @type FormRadioButton $objWidget */
                 $objWidget = new $GLOBALS['TL_FFL']['radio']($this->prepareForWidget(array
                 (
                     'name'      => $strWidget,
@@ -122,7 +121,7 @@ class ModuleVotingEnquiryList extends Module
                     'eval'      => array('mandatory'=>true)
                 ), $strWidget));
 
-                // Validte the widget
+                // Validate the widget
                 if ($this->Input->post('FORM_SUBMIT') == $strFormId) {
                     $objWidget->validate();
 
@@ -151,26 +150,37 @@ class ModuleVotingEnquiryList extends Module
         // Process the voting
         if ($this->Input->post('FORM_SUBMIT') == $strFormId && !$doNotSubmit) {
 
-            foreach ($arrWidgets as $objWidget) {
+            $this->Database->lockTables(
+                array(
+                    'tl_voting_vote'     => 'WRITE',
+                    'tl_voting_registry' => 'WRITE'
+                )
+            );
 
-                // Do not insert vote record if use chose abstention
-                if ($objWidget->value == 'abstention') {
-                    continue;
+            // Check voting status again after tables are locked
+            if ($this->canUserVote($objVoting)) {
+                foreach ($arrWidgets as $objWidget) {
+
+                    // Do not insert vote record if use chose abstention
+                    if ($objWidget->value != 'yes' && $objWidget->value != 'no') {
+                        continue;
+                    }
+
+                    $intEnquiry = intval(str_replace('enquiry_', '', $objWidget->name));
+                    $intVote = ($objWidget->value == 'yes') ? 1 : 0;
+
+                    $this->Database->prepare("INSERT INTO tl_voting_vote %s")
+                                   ->set(array('enquiry' => $intEnquiry, 'vote' => $intVote))
+                                   ->execute();
                 }
 
-                $intEnquiry = intval(str_replace('enquiry_', '', $objWidget->name));
-                $intVote = ($objWidget->value == 'yes') ? 1 : 0;
-
-                $this->Database->prepare("INSERT INTO tl_voting_vote %s")
-                               ->set(array('enquiry' => $intEnquiry, 'vote' => $intVote))
+                // Store the voting in registry
+                $this->Database->prepare("INSERT INTO tl_voting_registry %s")
+                               ->set(array('tstamp' => time(), 'voting' => $objVoting->id, 'member' => $this->User->id))
                                ->execute();
             }
 
-            // Store the voting in registry
-            $this->Database->prepare("INSERT INTO tl_voting_registry %s")
-                           ->set(array('tstamp' => time(), 'voting' => $objEnquiries->pid, 'member' => $this->User->id))
-                           ->execute();
-
+            $this->Database->unlockTables();
             $this->reload();
         }
     }
