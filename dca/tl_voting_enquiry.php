@@ -83,7 +83,7 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{name_legend},name,alias,teaser;{text_legend},description,attachments'
+        'default'                     => '{name_legend},name,alias,teaser;{text_legend},description,recommendation,attachments'
     ),
 
     // Fields
@@ -124,6 +124,14 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = array
             'search'                  => true,
             'inputType'               => 'textarea',
             'eval'                    => array('mandatory'=>true, 'rte'=>'tinyMCE', 'tl_class'=>'clr'),
+        ),
+        'recommendation' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['recommendation'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'textarea',
+            'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
         ),
         'attachments' => array
         (

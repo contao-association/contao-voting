@@ -16,6 +16,7 @@ $GLOBALS['TL_LANG']['tl_voting_enquiry']['name']        = array('Name', 'Please 
 $GLOBALS['TL_LANG']['tl_voting_enquiry']['alias']       = array('Enquiry alias', 'The enquiry alias is a unique reference to the enquiry which can be called instead of its numeric ID.');
 $GLOBALS['TL_LANG']['tl_voting_enquiry']['teaser']      = array('Teaser', 'Please enter the enquiry teaser.');
 $GLOBALS['TL_LANG']['tl_voting_enquiry']['description'] = array('Description', 'Please enter the enquiry description.');
+$GLOBALS['TL_LANG']['tl_voting_enquiry']['recommendation'] = array('Recommendation', 'Please enter the board\'s recommendation if available.');
 $GLOBALS['TL_LANG']['tl_voting_enquiry']['attachments'] = array('Attachments', 'Here you can select the attachments.');
 
 /**

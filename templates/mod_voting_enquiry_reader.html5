@@ -6,10 +6,14 @@
     <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
     <?php endif; ?>
 
-    <h1><?php echo $this->name; ?></h1>
+    <h2><?php echo $this->name; ?></h2>
 
     <div class="description">
         <?php echo $this->description; ?>
+    </div>
+
+    <div class="recommendation">
+        <?php echo $this->recommendation; ?>
     </div>
 
     <?php if ($this->attachments): ?>

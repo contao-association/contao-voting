@@ -40,6 +40,7 @@ CREATE TABLE `tl_voting_enquiry` (
   `name` varchar(255) NOT NULL default '',
   `teaser` text NULL,
   `description` mediumtext NULL,
+  `recommendation` mediumtext NULL,
   `attachments` blob NULL,
   `ayes` smallint(5) unsigned NOT NULL default '0',
   `nays` smallint(5) unsigned NOT NULL default '0',
