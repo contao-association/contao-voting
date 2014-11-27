@@ -54,7 +54,7 @@ class ModuleVotingList extends ModuleVoting
                 (SELECT COUNT(*) FROM tl_voting_enquiry WHERE pid=tl_voting.id) AS total_enquiries
             FROM tl_voting
             " . (!BE_USER_LOGGED_IN ? " WHERE published=1" : "") . "
-            GROUP BY id
+            ORDER BY start DESC
         ");
 
         if (!$objVotings->numRows) {

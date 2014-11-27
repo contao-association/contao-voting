@@ -14,7 +14,6 @@
 CREATE TABLE `tl_voting` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `tstamp` int(10) unsigned NOT NULL default '0',
-  `dateAdded` int(10) unsigned NOT NULL default '0',
   `alias` varbinary(128) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',
   `groups` blob NULL,

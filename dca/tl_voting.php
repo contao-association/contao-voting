@@ -22,10 +22,6 @@ $GLOBALS['TL_DCA']['tl_voting'] = array
         'ctable'                      => array('tl_voting_enquiry'),
         'enableVersioning'            => true,
         'switchToEdit'                => true,
-        'onsubmit_callback' => array
-        (
-            array('tl_voting', 'storeDateAdded')
-        )
     ),
 
     // List
@@ -34,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = array
         'sorting' => array
         (
             'mode'                    => 1,
-            'fields'                  => array('dateAdded'),
+            'fields'                  => array('start DESC'),
             'flag'                    => 8,
             'panelLayout'             => 'filter;search,limit'
         ),
@@ -161,18 +157,6 @@ $GLOBALS['TL_DCA']['tl_voting'] = array
  */
 class tl_voting extends Backend
 {
-
-    /**
-     * Store the date added
-     * @param DataContainer
-     */
-    public function storeDateAdded(DataContainer $dc)
-    {
-        if (!$dc->activeRecord->dateAdded) {
-            $this->Database->prepare("UPDATE tl_voting SET dateAdded=? WHERE id=?")
-                           ->execute(time(), $dc->id);
-        }
-    }
 
     /**
      * Auto-generate the voting alias if it has not been set yet
