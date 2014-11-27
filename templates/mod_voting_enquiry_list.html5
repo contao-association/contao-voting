@@ -15,6 +15,11 @@
             <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
     <?php endif; ?>
 
+    <h3><?php echo $this->voting['name']; ?></h3>
+    <p>Abstimmungszeitraum: <?php echo $this->duration; ?></p>
+    <p>Anzahl Anträge: <?php echo $this->totalEnquiries; ?></p>
+
+
     <?php if ($this->hasVoted): ?>
         <p class="voted"><?php echo $GLOBALS['TL_LANG']['MSC']['hasVoted']; ?></p>
     <?php endif; ?>

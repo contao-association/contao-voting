@@ -64,9 +64,11 @@ class ModuleVotingEnquiryList extends ModuleVoting
      */
     protected function compile()
     {
-        $objVoting = $this->Database->prepare("SELECT * FROM tl_voting WHERE alias=?" . (!BE_USER_LOGGED_IN ? " AND published=1" : ""))
-                                    ->limit(1)
-                                    ->executeUncached($this->Input->get('items'));
+        $objVoting = $this->Database->prepare("
+            SELECT *
+            FROM tl_voting
+            WHERE alias=?" . (!BE_USER_LOGGED_IN ? " AND published=1" : "")
+        )->limit(1)->executeUncached($this->Input->get('items'));
 
         if (!$objVoting->numRows) {
 
@@ -173,6 +175,10 @@ class ModuleVotingEnquiryList extends ModuleVoting
             $this->Database->unlockTables();
             $this->reload();
         }
+
+        $this->Template->voting = $objVoting->row();
+        $this->Template->totalEnquiries = $objEnquiries->numRows;
+        $this->Template->duration = $this->getDuration($objVoting);
 
         $this->Template->enquiries = $arrEnquiries;
         $this->Template->canVote = $blnCanVote;

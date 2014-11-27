@@ -68,4 +68,13 @@ abstract class ModuleVoting extends \Module
 
         return false;
     }
+
+    protected function getDuration($objVoting)
+    {
+        return sprintf(
+            '%s – %s',
+            $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objVoting->start),
+            $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objVoting->stop)
+        );
+    }
 }
