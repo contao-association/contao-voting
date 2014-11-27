@@ -14,7 +14,7 @@
  *
  * Front end module "voting enquiry list".
  */
-class ModuleVotingEnquiryList extends Module
+class ModuleVotingEnquiryList extends ModuleVoting
 {
 
     /**
@@ -179,40 +179,5 @@ class ModuleVotingEnquiryList extends Module
         $this->Template->formId = $strFormId;
         $this->Template->action = ampersand($this->Environment->request);
         $this->Template->submit = specialchars($GLOBALS['TL_LANG']['MSC']['voting_vote']);
-    }
-
-    /**
-     * Return true if the user can vote
-     *
-     * @param \Database_Result $objVoting
-     *
-     * @return bool
-     */
-    protected function canUserVote($objVoting)
-    {
-        if (!FE_USER_LOGGED_IN) {
-            return false;
-        }
-
-        $time = time();
-
-        if ($objVoting->start > $time || $objVoting->stop < $time) {
-            return false;
-        }
-
-        // User is not in an allowed member group
-        if (count(array_intersect($this->User->groups, deserialize($objVoting->groups, true))) < 1) {
-            return false;
-        }
-
-        $objVoted = $this->Database->prepare("SELECT COUNT(*) AS votes FROM tl_voting_registry WHERE voting=? AND member=?")
-                                   ->executeUncached($objVoting->id, $this->User->id);
-
-        // User already voted before
-        if ($objVoted->votes > 0) {
-            return false;
-        }
-
-        return true;
     }
 }

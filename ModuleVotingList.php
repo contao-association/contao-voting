@@ -14,7 +14,7 @@
  *
  * Front end module "voting list".
  */
-class ModuleVotingList extends Module
+class ModuleVotingList extends ModuleVoting
 {
 
     /**

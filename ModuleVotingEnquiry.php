@@ -14,7 +14,7 @@
  *
  * Front end module "voting enquiry reader".
  */
-class ModuleVotingEnquiry extends Module
+class ModuleVotingEnquiry extends ModuleVoting
 {
 
     /**
