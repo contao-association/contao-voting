@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = array
         'sorting' => array
         (
             'mode'                    => 1,
-            'fields'                  => array('start DESC'),
+            'fields'                  => array('start'),
             'flag'                    => 8,
             'panelLayout'             => 'filter;search,limit'
         ),
