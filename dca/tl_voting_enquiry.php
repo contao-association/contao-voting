@@ -196,6 +196,14 @@ class tl_voting_enquiry extends Backend
      */
     public function listEnquiries($arrRow)
     {
+        static $total;
+
+        if (null === $total) {
+            $total = $this->Database->prepare("SELECT COUNT(*) AS total FROM tl_voting_registry WHERE voting=?")
+                                    ->execute($arrRow['pid'])
+                                    ->total;
+        }
+
         return '<div>
 <h4>' . $arrRow['name'] . '</h4>
 ' . $arrRow['teaser'] . '
@@ -215,6 +223,10 @@ class tl_voting_enquiry extends Backend
         <tr>
             <td class="tl_file_list"><strong>' . $GLOBALS['TL_LANG']['MSC']['voting_total'] . '</td>
             <td class="tl_file_list"><strong>' . ($arrRow['ayes'] + $arrRow['nays']) . '</td>
+        </tr>
+        <tr>
+            <td class="tl_file_list"><strong>' . $GLOBALS['TL_LANG']['MSC']['voting_participants'] . '</td>
+            <td class="tl_file_list"><strong>' . $total . '</td>
         </tr>
     </tbody>
 </table>

@@ -15,6 +15,7 @@
 $GLOBALS['TL_LANG']['MSC']['voting_vote']                   = 'Vote';
 $GLOBALS['TL_LANG']['MSC']['voting_summary']                = 'Voting summary';
 $GLOBALS['TL_LANG']['MSC']['voting_total']                  = 'Total votes';
+$GLOBALS['TL_LANG']['MSC']['voting_participants']           = 'Total participants';
 $GLOBALS['TL_LANG']['MSC']['voting_options']['yes']         = 'Yes';
 $GLOBALS['TL_LANG']['MSC']['voting_options']['no']          = 'No';
 $GLOBALS['TL_LANG']['MSC']['voting_options']['abstention']  = 'Abstention';
