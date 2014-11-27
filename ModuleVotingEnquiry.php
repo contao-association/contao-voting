@@ -64,7 +64,7 @@ class ModuleVotingEnquiry extends ModuleVoting
                                      ->limit(1)
                                      ->execute($this->Input->get('items'));
 
-        if (!$objEnquiry->numRows || !$objEnquiry->published) {
+        if (!$objEnquiry->numRows) {
             $objHandler = new $GLOBALS['TL_PTY']['error_404']();
             $objHandler->generate($GLOBALS['objPage']->id);
         }
