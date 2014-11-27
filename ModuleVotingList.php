@@ -81,7 +81,7 @@ class ModuleVotingList extends ModuleVoting
         // Generate votings
         while ($objVotings->next()) {
             $arrVotings[$objVotings->id] = $objVotings->row();
-            $arrVotings[$objVotings->id]['class'] = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($this->isActive($objVotings) ? ' active' : '');
+            $arrVotings[$objVotings->id]['class'] = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($this->isActive($objVotings) ? ' active' : '') . ($objVotings->start > time() ? ' upcoming' : '');
             $arrVotings[$objVotings->id]['href'] = sprintf($strUrl, $objVotings->alias);
             $arrVotings[$objVotings->id]['linkTitle'] = specialchars($objVotings->name);
             $arrVotings[$objVotings->id]['duration'] = sprintf(
