@@ -18,3 +18,5 @@ $GLOBALS['TL_LANG']['MSC']['voting_total']                  = 'Total votes';
 $GLOBALS['TL_LANG']['MSC']['voting_options']['yes']         = 'Yes';
 $GLOBALS['TL_LANG']['MSC']['voting_options']['no']          = 'No';
 $GLOBALS['TL_LANG']['MSC']['voting_options']['abstention']  = 'Abstention';
+
+$GLOBALS['TL_LANG']['MSC']['hasVoted'] = 'You have already participated in this vote.';

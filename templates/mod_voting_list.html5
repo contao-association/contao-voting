@@ -11,6 +11,8 @@
         <?php foreach ($this->votings as $voting): ?>
         <div class="vote<?php echo $voting['class']; ?>">
             <h4><a href="<?php echo $voting['href']; ?>" title="<?php echo $voting['linkTitle']; ?>"><?php echo $voting['name']; ?></a></h4>
+            <p>Abstimmungszeitraum: <?php echo $voting['duration']; ?></p>
+            <p>Anzahl Anträge: <?php echo $voting['total_enquiries']; ?></p>
         </div>
         <?php endforeach; ?>
     </div>

@@ -176,6 +176,7 @@ class ModuleVotingEnquiryList extends ModuleVoting
 
         $this->Template->enquiries = $arrEnquiries;
         $this->Template->canVote = $blnCanVote;
+        $this->Template->hasVoted = $this->hasUserVoted($objVoting) && $this->isActive($objVoting);
         $this->Template->formId = $strFormId;
         $this->Template->action = ampersand($this->Environment->request);
         $this->Template->submit = specialchars($GLOBALS['TL_LANG']['MSC']['voting_vote']);

@@ -49,7 +49,13 @@ class ModuleVotingList extends ModuleVoting
      */
     protected function compile()
     {
-        $objVotings = $this->Database->execute("SELECT * FROM tl_voting" . (!BE_USER_LOGGED_IN ? " WHERE published=1" : "") . " ORDER BY dateAdded DESC");
+        $objVotings = $this->Database->execute("
+            SELECT *,
+                (SELECT COUNT(*) FROM tl_voting_enquiry WHERE pid=tl_voting.id) AS total_enquiries
+            FROM tl_voting
+            " . (!BE_USER_LOGGED_IN ? " WHERE published=1" : "") . "
+            GROUP BY id
+        ");
 
         if (!$objVotings->numRows) {
             return;
@@ -75,9 +81,14 @@ class ModuleVotingList extends ModuleVoting
         // Generate votings
         while ($objVotings->next()) {
             $arrVotings[$objVotings->id] = $objVotings->row();
-            $arrVotings[$objVotings->id]['class'] = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even');
+            $arrVotings[$objVotings->id]['class'] = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($this->isActive($objVotings) ? ' active' : '');
             $arrVotings[$objVotings->id]['href'] = sprintf($strUrl, $objVotings->alias);
             $arrVotings[$objVotings->id]['linkTitle'] = specialchars($objVotings->name);
+            $arrVotings[$objVotings->id]['duration'] = sprintf(
+                '%s – %s',
+                $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objVotings->start),
+                $this->parseDate($GLOBALS['TL_CONFIG']['dateFormat'], $objVotings->stop)
+            );
         }
 
         $this->Template->votings = $arrVotings;

@@ -15,6 +15,10 @@
             <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
     <?php endif; ?>
 
+    <?php if ($this->hasVoted): ?>
+        <p class="voted"><?php echo $GLOBALS['TL_LANG']['MSC']['hasVoted']; ?></p>
+    <?php endif; ?>
+
     <div class="enquiries">
         <?php foreach ($this->enquiries as $enquiry): ?>
         <div class="enquiry<?php echo $enquiry['class']; ?>">
