@@ -20,3 +20,4 @@ $GLOBALS['TL_LANG']['MSC']['voting_options']['no']          = 'No';
 $GLOBALS['TL_LANG']['MSC']['voting_options']['abstention']  = 'Abstention';
 
 $GLOBALS['TL_LANG']['MSC']['hasVoted'] = 'You have already participated in this vote.';
+$GLOBALS['TL_LANG']['MSC']['vote_confirm'] = 'Hast du alle Anträge gelesen und beantwortet? Du kannst deine Antworten danach nicht mehr ändern!';

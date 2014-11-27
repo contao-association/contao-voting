@@ -48,7 +48,7 @@
 
     <?php if ($this->canVote): ?>
             <div class="submit_container">
-                <input type="submit" class="submit" value="<?php echo $this->submit; ?>">
+                <input type="submit" class="submit" value="<?php echo $this->submit; ?>" onclick="return confirm('<?php echo specialchars($GLOBALS['TL_LANG']['MSC']['vote_confirm']); ?>')">
             </div>
         </div>
     </form>
