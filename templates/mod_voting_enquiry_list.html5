@@ -15,10 +15,9 @@
             <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
     <?php endif; ?>
 
-    <h3><?php echo $this->voting['name']; ?></h3>
+    <h2><?php echo $this->voting['name']; ?></h2>
     <p class="period">Abstimmungszeitraum: <?php echo $this->period; ?></p>
     <p class="total">Anzahl Anträge: <?php echo $this->totalEnquiries; ?></p>
-
 
     <?php if ($this->hasVoted): ?>
         <p class="voted"><?php echo $GLOBALS['TL_LANG']['MSC']['hasVoted']; ?></p>
@@ -27,7 +26,7 @@
     <div class="enquiries">
         <?php foreach ($this->enquiries as $enquiry): ?>
         <div class="enquiry<?php echo $enquiry['class']; ?>">
-            <h4><a href="<?php echo $enquiry['href']; ?>" title="<?php echo $enquiry['linkTitle']; ?>" target="_blank"><?php echo $enquiry['name']; ?></a></h4>
+            <h3><a href="<?php echo $enquiry['href']; ?>" title="<?php echo $enquiry['linkTitle']; ?>" target="_blank"><?php echo $enquiry['name']; ?></a></h3>
 
             <div class="teaser">
                 <?php echo $enquiry['teaser']; ?>
