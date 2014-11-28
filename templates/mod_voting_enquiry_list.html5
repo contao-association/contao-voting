@@ -16,8 +16,8 @@
     <?php endif; ?>
 
     <h3><?php echo $this->voting['name']; ?></h3>
-    <p>Abstimmungszeitraum: <?php echo $this->duration; ?></p>
-    <p>Anzahl Anträge: <?php echo $this->totalEnquiries; ?></p>
+    <p class="period">Abstimmungszeitraum: <?php echo $this->period; ?></p>
+    <p class="total">Anzahl Anträge: <?php echo $this->totalEnquiries; ?></p>
 
 
     <?php if ($this->hasVoted): ?>

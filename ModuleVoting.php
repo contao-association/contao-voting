@@ -69,7 +69,7 @@ abstract class ModuleVoting extends \Module
         return false;
     }
 
-    protected function getDuration($objVoting)
+    protected function getPeriod($objVoting)
     {
         return sprintf(
             '%s – %s',

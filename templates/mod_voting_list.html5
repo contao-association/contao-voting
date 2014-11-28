@@ -12,8 +12,8 @@
         <div class="vote<?php echo $voting['class']; ?>">
             <a href="<?php echo $voting['href']; ?>" title="<?php echo $voting['linkTitle']; ?>">
                 <h4><?php echo $voting['name']; ?></h4>
-                <p>Abstimmungszeitraum: <?php echo $voting['duration']; ?></p>
-                <p>Anzahl Anträge: <?php echo $voting['total_enquiries']; ?></p>
+                <p class="period">Abstimmungszeitraum: <?php echo $voting['period']; ?></p>
+                <p class="total">Anzahl Anträge: <?php echo $voting['total_enquiries']; ?></p>
             </a>
         </div>
         <?php endforeach; ?>

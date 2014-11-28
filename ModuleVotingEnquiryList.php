@@ -178,7 +178,7 @@ class ModuleVotingEnquiryList extends ModuleVoting
 
         $this->Template->voting = $objVoting->row();
         $this->Template->totalEnquiries = $objEnquiries->numRows;
-        $this->Template->duration = $this->getDuration($objVoting);
+        $this->Template->period = $this->getPeriod($objVoting);
 
         $this->Template->enquiries = $arrEnquiries;
         $this->Template->canVote = $blnCanVote;

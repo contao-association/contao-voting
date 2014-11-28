@@ -84,7 +84,7 @@ class ModuleVotingList extends ModuleVoting
             $arrVotings[$objVotings->id]['class'] = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($this->isActive($objVotings) ? ' active' : '') . ($objVotings->start > time() ? ' upcoming' : '');
             $arrVotings[$objVotings->id]['href'] = sprintf($strUrl, $objVotings->alias);
             $arrVotings[$objVotings->id]['linkTitle'] = specialchars($objVotings->name);
-            $arrVotings[$objVotings->id]['duration'] = $this->getDuration($objVotings);
+            $arrVotings[$objVotings->id]['period'] = $this->getPeriod($objVotings);
         }
 
         $this->Template->votings = $arrVotings;
