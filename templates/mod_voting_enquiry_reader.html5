@@ -22,9 +22,11 @@
         </div>
     <?php endif; ?>
 
-    <div class="recommendation">
-        <?php echo $this->recommendation; ?>
-    </div>
+    <?php if ($this->recommendation): ?>
+        <div class="recommendation">
+            <?php echo $this->recommendation; ?>
+        </div>
+    <?php endif; ?>
 
 </div>
 <!-- indexer::continue -->
