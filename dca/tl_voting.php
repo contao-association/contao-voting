@@ -88,7 +88,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{name_legend},name,alias,groups;{publish_legend},published,start,stop'
+        'default'                     => '{name_legend},name,alias,groups;{redirect_legend:hide},jumpTo;{publish_legend},published,start,stop'
     ),
 
     // Fields
@@ -122,6 +122,13 @@ $GLOBALS['TL_DCA']['tl_voting'] = array
             'inputType'               => 'checkbox',
             'foreignKey'              => 'tl_member_group.name',
             'eval'                    => array('mandatory'=>true, 'multiple'=>true, 'tl_class'=>'clr'),
+        ),
+        'jumpTo' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['jumpTo'],
+            'exclude'                 => true,
+            'inputType'               => 'pageTree',
+            'eval'                    => array('fieldType'=>'radio')
         ),
         'published' => array
         (

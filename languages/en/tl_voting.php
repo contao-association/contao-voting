@@ -15,6 +15,7 @@
 $GLOBALS['TL_LANG']['tl_voting']['name']        = array('Name', 'Please enter the voting name.');
 $GLOBALS['TL_LANG']['tl_voting']['alias']       = array('Voting alias', 'The voting alias is a unique reference to the voting which can be called instead of its numeric ID.');
 $GLOBALS['TL_LANG']['tl_voting']['groups']      = array('Allowed member groups', 'Please choose the member groups allowed to vote.');
+$GLOBALS['TL_LANG']['tl_voting']['jumpTo']      = array('Redirect page', 'Optionally select a redirect page for this voting.');
 $GLOBALS['TL_LANG']['tl_voting']['published']   = array('Publish voting', 'Make the voting publicly visible on the website.');
 $GLOBALS['TL_LANG']['tl_voting']['start']       = array('Voting from', 'Do not allow to vote before this day.');
 $GLOBALS['TL_LANG']['tl_voting']['stop']        = array('Voting until', 'Do not allow to vote on and after this day.');
@@ -22,8 +23,9 @@ $GLOBALS['TL_LANG']['tl_voting']['stop']        = array('Voting until', 'Do not 
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_voting']['name_legend']    = 'Name and alias';
-$GLOBALS['TL_LANG']['tl_voting']['publish_legend'] = 'Publish settings';
+$GLOBALS['TL_LANG']['tl_voting']['name_legend']     = 'Name and alias';
+$GLOBALS['TL_LANG']['tl_voting']['redirect_legend'] = 'Redirect';
+$GLOBALS['TL_LANG']['tl_voting']['publish_legend']  = 'Publish settings';
 
 /**
  * Buttons

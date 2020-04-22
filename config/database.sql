@@ -17,6 +17,7 @@ CREATE TABLE `tl_voting` (
   `alias` varbinary(128) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',
   `groups` blob NULL,
+  `jumpTo` int(10) unsigned NOT NULL default '0',
   `published` char(1) NOT NULL default '',
   `start` varchar(10) NOT NULL default '',
   `stop` varchar(10) NOT NULL default '',

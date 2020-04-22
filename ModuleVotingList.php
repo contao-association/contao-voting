@@ -80,9 +80,21 @@ class ModuleVotingList extends ModuleVoting
 
         // Generate votings
         while ($objVotings->next()) {
+            $currentUrl = $strUrl;
+
+            if ($objVotings->jumpTo > 0) {
+                $objJump = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
+                    ->limit(1)
+                    ->execute($objVotings->jumpTo);
+
+                if ($objJump->numRows) {
+                    $currentUrl = ampersand($this->generateFrontendUrl($objJump->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ?  '/%s' : '/items/%s')));
+                }
+            }
+
             $arrVotings[$objVotings->id] = $objVotings->row();
             $arrVotings[$objVotings->id]['class'] = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($this->isActive($objVotings) ? ' active' : '') . ($objVotings->start > time() ? ' upcoming' : '');
-            $arrVotings[$objVotings->id]['href'] = sprintf($strUrl, $objVotings->alias);
+            $arrVotings[$objVotings->id]['href'] = sprintf($currentUrl, $objVotings->alias);
             $arrVotings[$objVotings->id]['linkTitle'] = specialchars($objVotings->name);
             $arrVotings[$objVotings->id]['period'] = $this->getPeriod($objVotings);
         }
