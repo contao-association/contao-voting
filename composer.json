@@ -1,0 +1,35 @@
+{
+    "name": "contao-association/contao-voting",
+    "description": "Voting feature for the Contao Association",
+    "keywords": ["voting"],
+    "type": "contao-bundle",
+    "license": "proprietary",
+    "authors": [{
+        "name": "Andreas Schempp",
+        "email": "andy@contao.org"
+    }],
+    "require": {
+        "php": "^7.4",
+        "contao/core-bundle": "^4.9.6"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.9",
+        "contao/easy-coding-standard": "^3.0"
+    },
+    "conflict": {
+        "contao/manager-plugin": "<2.9 || >=3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ContaoAssociation\\VotingBundle\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "ContaoAssociation\\VotingBundle\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "cs-fixer": [
+            "vendor/bin/ecs check src/ --fix --ansi"
+        ]
+    }
+}
