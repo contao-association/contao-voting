@@ -117,7 +117,7 @@ class VotingEnquiryListController extends AbstractVotingController
                     $strField = ('yes' === $objWidget->value) ? 'ayes' : 'nays';
 
                     $this->connection->executeStatement(
-                        "UPDATE tl_voting_enquiry SET $strField=($strField+1) WHERE id=?"
+                        "UPDATE tl_voting_enquiry SET $strField=($strField+1) WHERE id=?",
                         [$intEnquiry]
                     );
                 }

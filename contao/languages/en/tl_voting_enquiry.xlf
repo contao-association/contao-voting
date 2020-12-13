@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+    <file source-language="en">
+        <body>
+            <trans-unit id="tl_voting_enquiry.name.0">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.name.1">
+                <source>Please enter the enquiry name.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.alias.0">
+                <source>Enquiry alias</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.alias.1">
+                <source>The enquiry alias is a unique reference to the enquiry which can be called instead of its numeric ID.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.teaser.0">
+                <source>Teaser</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.teaser.1">
+                <source>Please enter the enquiry teaser.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.description.0">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.description.1">
+                <source>Please enter the enquiry description.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.recommendation.0">
+                <source>Recommendation</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.recommendation.1">
+                <source>Please enter the board's recommendation if available.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.attachments.0">
+                <source>Attachments</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.attachments.1">
+                <source>Here you can select the attachments.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.name_legend">
+                <source>Name and alias</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.text_legend">
+                <source>Description and attachments</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

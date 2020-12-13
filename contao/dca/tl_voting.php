@@ -1,190 +1,135 @@
 <?php
 
-/**
- * Table tl_voting
- */
-$GLOBALS['TL_DCA']['tl_voting'] = array
-(
-
-    // Config
-    'config' => array
-    (
-        'dataContainer'               => 'Table',
-        'ctable'                      => array('tl_voting_enquiry'),
-        'enableVersioning'            => true,
-        'switchToEdit'                => true,
-    ),
-
-    // List
-    'list' => array
-    (
-        'sorting' => array
-        (
-            'mode'                    => 1,
-            'fields'                  => array('start'),
-            'flag'                    => 8,
-            'panelLayout'             => 'filter;search,limit'
-        ),
-        'label' => array
-        (
-            'fields'                  => array('name'),
-            'format'                  => '%s'
-        ),
-        'global_operations' => array
-        (
-            'all' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href'                => 'act=select',
-                'class'               => 'header_edit_all',
-                'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="e"'
-            )
-        ),
-        'operations' => array
-        (
-            'edit' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_voting']['edit'],
-                'href'                => 'table=tl_voting_enquiry',
-                'icon'                => 'edit.gif'
-            ),
-            'editheader' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_voting']['editheader'],
-                'href'                => 'act=edit',
-                'icon'                => 'header.gif',
-            ),
-            'copy' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_voting']['copy'],
-                'href'                => 'act=copy',
-                'icon'                => 'copy.gif'
-            ),
-            'delete' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_voting']['delete'],
-                'href'                => 'act=delete',
-                'icon'                => 'delete.gif',
-                'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
-            ),
-            'show' => array
-            (
-                'label'               => &$GLOBALS['TL_LANG']['tl_voting']['show'],
-                'href'                => 'act=show',
-                'icon'                => 'show.gif'
-            )
-        )
-    ),
-
-    // Palettes
-    'palettes' => array
-    (
-        'default'                     => '{name_legend},name,alias,groups;{redirect_legend:hide},jumpTo;{publish_legend},published,start,stop'
-    ),
-
-    // Fields
-    'fields' => array
-    (
-        'name' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['name'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
-        ),
-        'alias' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['alias'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => array('rgxp'=>'alnum', 'unique'=>true, 'spaceToUnderscore'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
-            'save_callback' => array
-            (
-                array('tl_voting', 'generateAlias')
-            )
-        ),
-        'groups' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['groups'],
-            'exclude'                 => true,
-            'filter'                  => true,
-            'inputType'               => 'checkbox',
-            'foreignKey'              => 'tl_member_group.name',
-            'eval'                    => array('mandatory'=>true, 'multiple'=>true, 'tl_class'=>'clr'),
-        ),
-        'jumpTo' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['jumpTo'],
-            'exclude'                 => true,
-            'inputType'               => 'pageTree',
-            'eval'                    => array('fieldType'=>'radio')
-        ),
-        'published' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['published'],
-            'exclude'                 => true,
-            'filter'                  => true,
-            'flag'                    => 1,
-            'inputType'               => 'checkbox',
-            'eval'                    => array('doNotCopy'=>true, 'tl_class'=>'clr')
-        ),
-        'start' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['start'],
-            'exclude'                 => true,
-            'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard')
-        ),
-        'stop' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_voting']['stop'],
-            'exclude'                 => true,
-            'inputType'               => 'text',
-            'eval'                    => array('mandatory'=>true, 'rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard')
-        ),
-    )
-);
-
-
-/**
- * Class tl_voting
- *
- * Provide miscellaneous methods that are used by the data configuration array.
- */
-class tl_voting extends Backend
-{
-
-    /**
-     * Auto-generate the voting alias if it has not been set yet
-     * @param mixed
-     * @param DataContainer
-     * @return string
-     */
-    public function generateAlias($varValue, DataContainer $dc)
-    {
-        $autoAlias = false;
-
-        // Generate alias if there is none
-        if ($varValue == '') {
-            $autoAlias = true;
-            $varValue = standardize($this->restoreBasicEntities($dc->activeRecord->name));
-        }
-
-        $objAlias = $this->Database->prepare("SELECT id FROM tl_voting WHERE alias=?")
-                                   ->execute($varValue);
-
-        // Check whether the voting alias exists
-        if ($objAlias->numRows > 1 && !$autoAlias) {
-            throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
-        }
-
-        // Add ID to alias
-        if ($objAlias->numRows && $autoAlias) {
-            $varValue .= '-' . $dc->id;
-        }
-
-        return $varValue;
-    }
-}
+$GLOBALS['TL_DCA']['tl_voting'] = [
+    'config' => [
+        'dataContainer' => 'Table',
+        'ctable' => ['tl_voting_enquiry'],
+        'enableVersioning' => true,
+        'switchToEdit' => true,
+        'sql' => [
+            'keys' => [
+                'id' => 'primary',
+                'alias' => 'index',
+                'published' => 'index',
+            ],
+        ],
+    ],
+    'list' => [
+        'sorting' => [
+            'mode' => 1,
+            'fields' => ['start'],
+            'flag' => 8,
+            'panelLayout' => 'filter;search,limit',
+        ],
+        'label' => [
+            'fields' => ['name'],
+            'format' => '%s',
+        ],
+        'global_operations' => [
+            'all' => [
+                'href' => 'act=select',
+                'class' => 'header_edit_all',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+            ],
+        ],
+        'operations' => [
+            'edit' => [
+                'href' => 'table=tl_voting_enquiry',
+                'icon' => 'edit.gif',
+            ],
+            'editheader' => [
+                'href' => 'act=edit',
+                'icon' => 'header.gif',
+            ],
+            'copy' => [
+                'href' => 'act=copy',
+                'icon' => 'copy.gif',
+            ],
+            'delete' => [
+                'href' => 'act=delete',
+                'icon' => 'delete.gif',
+                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+            ],
+            'show' => [
+                'href' => 'act=show',
+                'icon' => 'show.gif',
+            ],
+        ],
+    ],
+    'palettes' => [
+        'default' => '{name_legend},name,alias,groups;{redirect_legend:hide},jumpTo;{publish_legend},published,start,stop',
+    ],
+    'fields' => [
+        'id' => [
+            'sql' => 'int(10) unsigned NOT NULL auto_increment',
+        ],
+        'tstamp' => [
+            'sql' => 'int(10) unsigned NOT NULL default 0',
+        ],
+        'name' => [
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'text',
+            'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'sql' => "varchar(255) NOT NULL default ''",
+        ],
+        'alias' => [
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'text',
+            'eval' => [
+                'rgxp' => 'alnum',
+                'unique' => true,
+                'spaceToUnderscore' => true,
+                'doNotCopy' => true,
+                'maxlength' => 128,
+                'tl_class' => 'w50',
+            ],
+            'sql' => "varbinary(128) NOT NULL default ''",
+        ],
+        'groups' => [
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'checkbox',
+            'foreignKey' => 'tl_member_group.name',
+            'eval' => ['mandatory' => true, 'multiple' => true, 'tl_class' => 'clr'],
+            'sql' => 'blob NULL',
+        ],
+        'jumpTo' => [
+            'exclude' => true,
+            'inputType' => 'pageTree',
+            'eval' => ['fieldType' => 'radio'],
+            'sql' => 'int(10) unsigned NOT NULL default 0'
+        ],
+        'published' => [
+            'exclude' => true,
+            'filter' => true,
+            'flag' => 1,
+            'inputType' => 'checkbox',
+            'eval' => ['doNotCopy' => true, 'tl_class' => 'clr'],
+            'sql' => "char(1) NOT NULL default ''"
+        ],
+        'start' => [
+            'exclude' => true,
+            'inputType' => 'text',
+            'eval' => [
+                'mandatory' => true,
+                'rgxp' => 'datim',
+                'datepicker' => true,
+                'tl_class' => 'w50 wizard',
+            ],
+            'sql' => "varchar(10) NOT NULL default ''"
+        ],
+        'stop' => [
+            'exclude' => true,
+            'inputType' => 'text',
+            'eval' => [
+                'mandatory' => true,
+                'rgxp' => 'datim',
+                'datepicker' => true,
+                'tl_class' => 'w50 wizard',
+            ],
+            'sql' => "varchar(10) NOT NULL default ''"
+        ],
+    ],
+];

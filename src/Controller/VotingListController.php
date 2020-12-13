@@ -18,11 +18,11 @@ class VotingListController extends AbstractVotingController
 {
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        $results = $this->connection->fetchAllAssociative("
+        $results = $this->connection->fetchAllAssociative('
             SELECT *,
                 (SELECT COUNT(*) FROM tl_voting_enquiry WHERE pid=tl_voting.id) AS total_enquiries
             FROM tl_voting
-            " . (!BE_USER_LOGGED_IN ? " WHERE published=1" : "") . "
+            '. (!BE_USER_LOGGED_IN ? " WHERE published=1" : "") . "
             ORDER BY start DESC
         ");
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+    <file source-language="en">
+        <body>
+            <trans-unit id="MOD.voting.0">
+                <source>Voting</source>
+            </trans-unit>
+            <trans-unit id="FMD.voting">
+                <source>Voting</source>
+            </trans-unit>
+            <trans-unit id="FMD.voting_list">
+                <source>Voting list</source>
+            </trans-unit>
+            <trans-unit id="FMD.voting_enquiry_list">
+                <source>Enquiry list</source>
+            </trans-unit>
+            <trans-unit id="FMD.voting_enquiry_reader">
+                <source>Enquiry reader</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

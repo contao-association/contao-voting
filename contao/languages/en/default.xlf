@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+    <file source-language="en">
+        <body>
+            <trans-unit id="MSC.voting_vote">
+                <source>Vote</source>
+            </trans-unit>
+            <trans-unit id="MSC.voting_summary">
+                <source>Voting summary</source>
+            </trans-unit>
+            <trans-unit id="MSC.voting_total">
+                <source>Total votes</source>
+            </trans-unit>
+            <trans-unit id="MSC.voting_participants">
+                <source>Total participants</source>
+            </trans-unit>
+            <trans-unit id="MSC.voting_options.yes">
+                <source>Yes</source>
+            </trans-unit>
+            <trans-unit id="MSC.voting_options.no">
+                <source>No</source>
+            </trans-unit>
+            <trans-unit id="MSC.voting_options.abstention">
+                <source>Abstention</source>
+            </trans-unit>
+            <trans-unit id="MSC.hasVoted">
+                <source>You have already participated in this vote.</source>
+            </trans-unit>
+            <trans-unit id="MSC.vote_confirm">
+                <source>Hast du alle Anträge gelesen und beantwortet? Du kannst deine Antworten danach nicht mehr ändern!</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+    <file source-language="en">
+        <body>
+            <trans-unit id="tl_voting.name.0">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.name.1">
+                <source>Please enter the voting name.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.alias.0">
+                <source>Voting alias</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.alias.1">
+                <source>The voting alias is a unique reference to the voting which can be called instead of its numeric ID.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.groups.0">
+                <source>Allowed member groups</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.groups.1">
+                <source>Please choose the member groups allowed to vote.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.jumpTo.0">
+                <source>Redirect page</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.jumpTo.1">
+                <source>Optionally select a redirect page for this voting.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.published.0">
+                <source>Publish voting</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.published.1">
+                <source>Make the voting publicly visible on the website.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.start.0">
+                <source>Voting from</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.start.1">
+                <source>Do not allow to vote before this day.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.stop.0">
+                <source>Voting until</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.stop.1">
+                <source>Do not allow to vote on and after this day.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.name_legend">
+                <source>Name and alias</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.redirect_legend">
+                <source>Redirect</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.publish_legend">
+                <source>Publish settings</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
