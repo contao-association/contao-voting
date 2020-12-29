@@ -34,7 +34,7 @@ class VotingEnquiryListController extends AbstractVotingController
             throw new PageNotFoundException();
         }
 
-        $enquiries = $this->connection->fetchAssociative(
+        $enquiries = $this->connection->fetchAllAssociative(
             'SELECT * FROM tl_voting_enquiry WHERE pid=? ORDER BY sorting',
             [$voting['id']]
         );
