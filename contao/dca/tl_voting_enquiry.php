@@ -112,7 +112,10 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
         'attachments' => [
             'exclude' => true,
             'inputType' => 'fileTree',
-            'eval' => ['files' => true, 'filesOnly' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],
+            'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'filesOnly' => true, 'orderField' => 'attachmentsOrder', 'extensions' => \Contao\Config::get('allowedDownload'), 'tl_class' => 'clr m12'],
+            'sql' => 'blob NULL',
+        ],
+        'attachmentsOrder' => [
             'sql' => 'blob NULL',
         ],
         'ayes' => [

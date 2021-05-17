@@ -17,7 +17,7 @@
           height="18"
           alt="<?= $attachment['mime'] ?>"
           class="mime_icon"
-        > <a href="<?= $attachment['href'] ?>" title="<?= $attachment['title']; ?>"><?= $attachment['link'] ?>
+        > <a href="<?= $attachment['href'] ?>" title="<?= $attachment['title']; ?>" target="_blank"><?= $attachment['link'] ?>
           <span class="size">(<?= $attachment['filesize'] ?>)</span></a>
       </div>
     <?php endforeach; ?>

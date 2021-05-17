@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace ContaoAssociation\VotingBundle\Controller;
 
+use Contao\Config;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
+use Contao\FilesModel;
+use Contao\Frontend;
+use Contao\Image;
+use Contao\PageModel;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Contao\ModuleModel;
@@ -37,61 +42,128 @@ class VotingEnquiryReaderController extends AbstractVotingController
             $template->{$k} = $v;
         }
 
-        $arrAttachments = array();
-        $attachments = StringUtil::deserialize($enquiry['attachments'], true);
-
-        // Generate attachments
-        if (!empty($attachments)) {
-
-            $file = Input::get('file', true);
-
-            // Send the file to the browser
-            if ($file != '' && (in_array($file, $attachments) || in_array(dirname($file), $attachments)) && !preg_match('/^meta(_[a-z]{2})?\.txt$/', basename($file))) {
-                Controller::sendFileToBrowser($file);
-            }
-
-            $allowedDownload = StringUtil::trimsplit(',', strtolower($GLOBALS['TL_CONFIG']['allowedDownload']));
-
-            foreach ($attachments as $attachment) {
-                $objFile = new File($attachment);
-
-                // Skip the file if the extension is not available to downloads
-                if (!in_array($objFile->extension, $allowedDownload) || preg_match('/^meta(_[a-z]{2})?\.txt$/', basename($attachment))) {
-                    continue;
-                }
-
-                $arrMeta = $this->arrMeta[$objFile->basename];
-
-                if ($arrMeta[0] == '') {
-                    $arrMeta[0] = StringUtil::specialchars($objFile->basename);
-                }
-
-                $strHref = Environment::get('request');
-
-                // Remove an existing file parameter (see #5683)
-                if (preg_match('/(&(amp;)?|\?)file=/', $strHref)) {
-                    $strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
-                }
-
-                $strHref .= '?file=' . System::urlEncode($attachment);
-
-                $arrAttachments[] = [
-                    'link' => $arrMeta[0],
-                    'title' => $arrMeta[0],
-                    'href' => $strHref,
-                    'caption' => $arrMeta[2],
-                    'filesize' => System::getReadableSize($objFile->filesize, 1),
-                    'icon' => 'system/themes/flexible/images/' . $objFile->icon,
-                    'mime' => $objFile->mime,
-                    'meta' => $arrMeta,
-                    'extension' => $objFile->extension,
-                    'path' => $objFile->dirname
-                ];
-            }
-        }
-
-        $template->attachments = $arrAttachments;
+        $template->attachments = $this->generateAttachements($enquiry);
 
         return $template->getResponse();
+    }
+
+    private function generateAttachements(array $enquiry)
+    {
+        $attachments = StringUtil::deserialize($enquiry['attachments']);
+
+        // Return if there are no files
+        if (empty($attachments) && !\is_array($attachments)) {
+            return [];
+        }
+
+        // Get the file entries from the database
+        $objFiles = FilesModel::findMultipleByUuids($attachments);
+
+        if (null === $objFiles) {
+            return '';
+        }
+
+        $file = Input::get('file', true);
+
+        // Send the file to the browser (see #4632 and #8375)
+        if ($file) {
+            while ($objFiles->next()) {
+                if ($file == $objFiles->path || \dirname($file) == $objFiles->path) {
+                    Controller::sendFileToBrowser($file, true);
+                }
+            }
+
+            throw new PageNotFoundException('Invalid file name');
+        }
+
+        /** @var PageModel $objPage */
+        global $objPage;
+
+        $allowedDownload = StringUtil::trimsplit(',', strtolower(Config::get('allowedDownload')));
+
+        // Get all files
+        while ($objFiles->next()) {
+            // Continue if the files has been processed or does not exist
+            if (isset($files[$objFiles->path]) || !file_exists(System::getContainer()
+                        ->getParameter('kernel.project_dir').'/'.$objFiles->path)) {
+                continue;
+            }
+
+            // Single files
+            if ($objFiles->type !== 'file') {
+                continue;
+            }
+
+            $objFile = new File($objFiles->path);
+
+            if (!\in_array($objFile->extension, $allowedDownload)) {
+                continue;
+            }
+
+            $arrMeta = Frontend::getMetaData($objFiles->meta, $objPage->language);
+
+            if (empty($arrMeta)) {
+                if ($objPage->rootFallbackLanguage !== null) {
+                    $arrMeta = Frontend::getMetaData($objFiles->meta, $objPage->rootFallbackLanguage);
+                }
+            }
+
+            // Use the file name as title if none is given
+            if (!$arrMeta['title']) {
+                $arrMeta['title'] = StringUtil::specialchars($objFile->basename);
+            }
+
+            $strHref = Environment::get('request');
+
+            // Remove an existing file parameter (see #5683)
+            if (isset($_GET['file'])) {
+                $strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
+            }
+
+            $strHref .= (strpos($strHref, '?') !== false ? '&amp;' : '?').'file='.System::urlEncode($objFiles->path);
+
+            // Add the image
+            $files[$objFiles->path] = [
+                'id' => $objFiles->id,
+                'uuid' => $objFiles->uuid,
+                'name' => $objFile->basename,
+                'title' => StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['download'], $objFile->basename)),
+                'link' => $arrMeta['title'],
+                'caption' => $arrMeta['caption'],
+                'href' => $strHref,
+                'filesize' => System::getReadableSize($objFile->filesize),
+                'icon' => Image::getPath($objFile->icon),
+                'mime' => $objFile->mime,
+                'meta' => $arrMeta,
+                'extension' => $objFile->extension,
+                'path' => $objFile->dirname,
+            ];
+        }
+
+        $tmp = StringUtil::deserialize($enquiry['attachmentsOrder']);
+
+        if (!empty($tmp) && \is_array($tmp)) {
+            // Remove all values
+            $arrOrder = array_map(static function () {}, array_flip($tmp));
+
+            // Move the matching elements to their position in $arrOrder
+            foreach ($files as $k => $v) {
+                if (\array_key_exists($v['uuid'], $arrOrder)) {
+                    $arrOrder[$v['uuid']] = $v;
+                    unset($files[$k]);
+                }
+            }
+
+            // Append the left-over files at the end
+            if (!empty($files)) {
+                $arrOrder = array_merge($arrOrder, array_values($files));
+            }
+
+            // Remove empty (unreplaced) entries
+            $files = array_values(array_filter($arrOrder));
+            unset($arrOrder);
+        }
+
+        return $files;
     }
 }
