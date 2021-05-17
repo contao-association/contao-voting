@@ -17,7 +17,7 @@
   <p class="total"><?= $this->trans('total_enquiries', ['total' => $this->totalEnquiries], 'ContaoAssociationVotingBundle') ?></p>
 
   <?php if ($this->hasVoted): ?>
-    <p class="voted"><?= $GLOBALS['TL_LANG']['MSC']['hasVoted'] ?></p>
+    <p class="voted"><?= $this->trans('has_voted', [], 'ContaoAssociationVotingBundle') ?></p>
   <?php endif; ?>
 
   <div class="enquiries">
@@ -56,7 +56,7 @@
         type="submit"
         class="submit"
         value="<?= $this->submit ?>"
-        onclick="return confirm('<?= \Contao\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['vote_confirm']) ?>')"
+        onclick="return confirm('<?= \Contao\StringUtil::specialchars($this->trans('vote_confirm', [], 'ContaoAssociationVotingBundle')) ?>')"
       >
     </div>
     </div>

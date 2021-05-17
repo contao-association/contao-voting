@@ -7,3 +7,5 @@ total_enquiries: >-
     }
 enquiry_title: Details des Antrags «{name}» lesen
 enquiry_details: Antrag-Details
+vote_confirm: Hast du alle Anträge gelesen und beantwortet? Du kannst deine Antworten danach nicht mehr ändern!
+has_voted: Du hast an dieser Abstimmung bereits teilgenommen.
