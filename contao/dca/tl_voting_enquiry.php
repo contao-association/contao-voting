@@ -22,7 +22,6 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
         'global_operations' => [
             'all' =>
                 [
-                    'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
                     'href' => 'act=select',
                     'class' => 'header_edit_all',
                     'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
@@ -30,28 +29,23 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
         ],
         'operations' => [
             'edit' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['edit'],
                 'href' => 'act=edit',
                 'icon' => 'edit.gif',
             ],
             'copy' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['copy'],
                 'href' => 'act=paste&amp;mode=copy',
                 'icon' => 'copy.gif',
             ],
             'cut' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['cut'],
                 'href' => 'act=paste&amp;mode=cut',
                 'icon' => 'cut.gif',
             ],
             'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
             ],
             'show' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['show'],
                 'href' => 'act=show',
                 'icon' => 'show.gif',
             ],
@@ -74,7 +68,6 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
             'sql' => 'int(10) unsigned NOT NULL default 0',
         ],
         'name' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['name'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -82,7 +75,6 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'alias' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['alias'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -97,7 +89,6 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
             'sql' => "varbinary(128) NOT NULL default ''",
         ],
         'teaser' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['teaser'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
@@ -105,7 +96,6 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
             'sql' => 'text NULL',
         ],
         'description' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['description'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
@@ -113,7 +103,6 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
             'sql' => 'mediumtext NULL',
         ],
         'recommendation' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['recommendation'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
@@ -121,7 +110,6 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
             'sql' => 'mediumtext NULL',
         ],
         'attachments' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_voting_enquiry']['attachments'],
             'exclude' => true,
             'inputType' => 'fileTree',
             'eval' => ['files' => true, 'filesOnly' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],

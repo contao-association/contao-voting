@@ -1,24 +1,21 @@
+<?php $this->extend('block_unsearchable') ?>
+<?php $this->block('content') ?>
 
-<!-- indexer::stop -->
-<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->votings): ?>
+  <div class="voting">
+    <?php foreach ($this->votings as $voting): ?>
+      <div class="vote<?= $voting['class'] ?>">
+        <a href="<?= $voting['href'] ?>">
+          <h3><?= $voting['name'] ?></h3>
+          <p class="period">
+            <strong><?= $this->trans('period', [], 'ContaoAssociationVotingBundle') ?>:</strong>
+            <?= $voting['period'] ?>
+          </p>
+          <p class="total"><?= $this->trans('total_enquiries', ['total' => $voting['total_enquiries']], 'ContaoAssociationVotingBundle') ?></p>
+        </a>
+      </div>
+    <?php endforeach; ?>
+  </div>
+<?php endif; ?>
 
-    <?php if ($this->headline): ?>
-    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
-    <?php endif; ?>
-
-    <?php if ($this->votings): ?>
-    <div class="voting">
-        <?php foreach ($this->votings as $voting): ?>
-        <div class="vote<?php echo $voting['class']; ?>">
-            <a href="<?php echo $voting['href']; ?>" title="<?php echo $voting['linkTitle']; ?>">
-                <h3><?php echo $voting['name']; ?></h3>
-                <p class="period">Abstimmungszeitraum: <?php echo $voting['period']; ?></p>
-                <p class="total">Anzahl Anträge: <?php echo $voting['total_enquiries']; ?></p>
-            </a>
-        </div>
-        <?php endforeach; ?>
-    </div>
-    <?php endif; ?>
-
-</div>
-<!-- indexer::continue -->
+<?php $this->endblock() ?>

@@ -56,17 +56,11 @@ class VotingEnquiryListController extends AbstractVotingController
         $strFormId = 'voting_' . $model->id;
         $arrWidgets = [];
 
-        $limit = count($enquiries);
-        $count = 0;
         $arrEnquiries = array();
 
         foreach ($enquiries as $enquiry) {
             $arrEnquiries[$enquiry['id']] = $enquiry;
-            $arrEnquiries[$enquiry['id']]['class'] = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even');
             $arrEnquiries[$enquiry['id']]['href'] = sprintf($strUrl, $enquiry['alias']);
-            $arrEnquiries[$enquiry['id']]['linkTitle'] = StringUtil::specialchars($enquiry['name']);
-            $arrEnquiries[$enquiry['id']]['more'] = $GLOBALS['TL_LANG']['MSC']['more'];
-            $arrEnquiries[$enquiry['id']]['moreTitle'] = StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['more']);
 
             // Setup form widgets
             if ($blnCanVote) {
@@ -109,7 +103,7 @@ class VotingEnquiryListController extends AbstractVotingController
 
                 foreach ($arrWidgets as $intEnquiry => $objWidget) {
 
-                    // Do not insert vote record if use chose abstention
+                    // Do not insert vote record if user chose abstention
                     if ('yes' !== $objWidget->value && 'no' !== $objWidget->value) {
                         continue;
                     }

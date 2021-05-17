@@ -1,0 +1,9 @@
+period: Abstimmungszeitraum
+total_enquiries: >-
+    {total, plural,
+        =0      {Keine Anträge}
+        one     {1 Antrag}
+        other   {# Anträge}
+    }
+enquiry_title: Details des Antrags «{name}» lesen
+enquiry_details: Antrag-Details

@@ -1,59 +1,67 @@
+<?php $this->extend('block_unsearchable') ?>
+<?php $this->block('content') ?>
 
-<!-- indexer::stop -->
-<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<?php if ($this->enquiries): ?>
+  <?php if ($this->canVote): ?>
+    <form id="<?= $this->formId ?>" method="post">
+    <div class="formbody">
+    <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
+    <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+  <?php endif; ?>
 
-    <?php if ($this->headline): ?>
-    <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
-    <?php endif; ?>
+  <h2><?= $this->voting['name'] ?></h2>
+  <p class="period">
+    <strong><?= $this->trans('period', [], 'ContaoAssociationVotingBundle') ?>:</strong>
+    <?= $this->period ?></p>
+  <p class="total"><?= $this->trans('total_enquiries', ['total' => $this->totalEnquiries], 'ContaoAssociationVotingBundle') ?></p>
 
-    <?php if ($this->enquiries): ?>
+  <?php if ($this->hasVoted): ?>
+    <p class="voted"><?= $GLOBALS['TL_LANG']['MSC']['hasVoted'] ?></p>
+  <?php endif; ?>
 
-    <?php if ($this->canVote): ?>
-    <form id="<?php echo $this->formId; ?>" method="post">
-        <div class="formbody">
-            <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formId; ?>">
-            <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
-    <?php endif; ?>
+  <div class="enquiries">
+    <?php foreach ($this->enquiries as $enquiry): ?>
+      <div class="enquiry<?= $enquiry['class'] ?>">
+        <div class="text">
+          <h3>
+            <a href="<?= $enquiry['href']; ?>" target="_blank">
+              <?= $enquiry['name'] ?>
+            </a>
+          </h3>
 
-    <h2><?php echo $this->voting['name']; ?></h2>
-    <p class="period">Abstimmungszeitraum: <?php echo $this->period; ?></p>
-    <p class="total">Anzahl Anträge: <?php echo $this->totalEnquiries; ?></p>
-
-    <?php if ($this->hasVoted): ?>
-        <p class="voted"><?php echo $GLOBALS['TL_LANG']['MSC']['hasVoted']; ?></p>
-    <?php endif; ?>
-
-    <div class="enquiries">
-        <?php foreach ($this->enquiries as $enquiry): ?>
-        <div class="enquiry<?php echo $enquiry['class']; ?>">
-            <h3><a href="<?php echo $enquiry['href']; ?>" title="<?php echo $enquiry['linkTitle']; ?>" target="_blank"><?php echo $enquiry['name']; ?></a></h3>
-
-            <div class="teaser">
-                <?php echo $enquiry['teaser']; ?>
-            </div>
-
-            <p class="more">
-                <a href="<?php echo $enquiry['href']; ?>" title="<?php echo $enquiry['moreTitle']; ?>" target="_blank"><?php echo $enquiry['more']; ?></a>
-            </p>
-
-            <?php if ($this->canVote): ?>
-            <div class="widget">
-                <?php echo $enquiry['widget']->parse(); ?>
-            </div>
-            <?php endif; ?>
+          <p><?= $enquiry['teaser'] ?></p>
         </div>
-        <?php endforeach; ?>
+
+        <div class="more">
+          <a
+            href="<?= $enquiry['href'] ?>"
+            title="<?= $this->trans('enquiry_title', ['name' => $enquiry['name']], 'ContaoAssociationVotingBundle') ?>"
+            target="_blank"
+          ><?= $this->trans('enquiry_details', [], 'ContaoAssociationVotingBundle') ?></a>
+        </div>
+
+        <?php if ($this->canVote): ?>
+          <div class="vote">
+            <?= $enquiry['widget']->parse() ?>
+          </div>
+        <?php endif; ?>
+      </div>
+    <?php endforeach; ?>
+  </div>
+
+  <?php if ($this->canVote): ?>
+    <div class="submit_container">
+      <input
+        type="submit"
+        class="submit"
+        value="<?= $this->submit ?>"
+        onclick="return confirm('<?= \Contao\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['vote_confirm']) ?>')"
+      >
     </div>
-
-    <?php if ($this->canVote): ?>
-            <div class="submit_container">
-                <input type="submit" class="submit" value="<?php echo $this->submit; ?>" onclick="return confirm('<?php echo specialchars($GLOBALS['TL_LANG']['MSC']['vote_confirm']); ?>')">
-            </div>
-        </div>
+    </div>
     </form>
-    <?php endif; ?>
+  <?php endif; ?>
 
-    <?php endif; ?>
+<?php endif; ?>
 
-</div>
-<!-- indexer::continue -->
+<?php $this->endblock() ?>

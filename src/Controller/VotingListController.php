@@ -40,8 +40,6 @@ class VotingListController extends AbstractVotingController
             }
         }
 
-        $limit = count($results);
-        $count = 0;
         $votings = [];
 
         foreach ($results as $row) {
@@ -56,9 +54,7 @@ class VotingListController extends AbstractVotingController
             }
 
             $votings[$row['id']] = $row;
-            $votings[$row['id']]['class'] = ((++$count == 1) ? ' first' : '') . (($count == $limit) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($this->isActive($row) ? ' active' : '') . ($row['start'] > time() ? ' upcoming' : '');
             $votings[$row['id']]['href'] = sprintf($currentUrl, $row['alias']);
-            $votings[$row['id']]['linkTitle'] = specialchars($row['name']);
             $votings[$row['id']]['period'] = $this->getPeriod($row);
         }
 
