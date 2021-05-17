@@ -138,7 +138,7 @@ class VotingEnquiryListController extends AbstractVotingController
 
         $template->enquiries = $arrEnquiries;
         $template->canVote = $blnCanVote;
-        $template->hasVoted = $this->hasUserVoted($voting) && $this->isActive($voting);
+        $template->hasVoted = $this->hasUserVoted($voting);
         $template->formId = $strFormId;
         $template->submit = StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['voting_vote']);
 
