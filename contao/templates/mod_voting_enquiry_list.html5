@@ -10,6 +10,7 @@
   <?php endif; ?>
 
   <h2><?= $this->voting['name'] ?></h2>
+  <?= $this->voting['description'] ?>
   <p class="period">
     <strong><?= $this->trans('period', [], 'ContaoAssociationVotingBundle') ?>:</strong>
     <?= $this->period ?></p>
@@ -21,7 +22,7 @@
 
   <div class="enquiries">
     <?php foreach ($this->enquiries as $enquiry): ?>
-      <div class="enquiry<?= $enquiry['class'] ?>">
+      <div class="enquiry<?= $enquiry['class'] ?><?php if ($this->canVote): ?> can-vote<?php endif; ?>">
         <div class="text">
           <h3>
             <a href="<?= $enquiry['href']; ?>" target="_blank">
