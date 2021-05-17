@@ -20,6 +20,12 @@
             <trans-unit id="tl_voting.groups.1">
                 <source>Please choose the member groups allowed to vote.</source>
             </trans-unit>
+            <trans-unit id="tl_voting.description.0">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.description.1">
+                <source>Enter an optional description for this voting.</source>
+            </trans-unit>
             <trans-unit id="tl_voting.jumpTo.0">
                 <source>Redirect page</source>
             </trans-unit>
@@ -46,6 +52,9 @@
             </trans-unit>
             <trans-unit id="tl_voting.name_legend">
                 <source>Name and alias</source>
+            </trans-unit>
+            <trans-unit id="tl_voting.text_legend">
+                <source>Description</source>
             </trans-unit>
             <trans-unit id="tl_voting.redirect_legend">
                 <source>Redirect</source>

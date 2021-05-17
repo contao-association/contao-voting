@@ -57,7 +57,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{name_legend},name,alias,groups;{redirect_legend:hide},jumpTo;{publish_legend},published,start,stop',
+        'default' => '{name_legend},name,alias,groups;{text_legend},description;{redirect_legend:hide},jumpTo;{publish_legend},published,start,stop',
     ],
     'fields' => [
         'id' => [
@@ -94,6 +94,13 @@ $GLOBALS['TL_DCA']['tl_voting'] = [
             'foreignKey' => 'tl_member_group.name',
             'eval' => ['mandatory' => true, 'multiple' => true, 'tl_class' => 'clr'],
             'sql' => 'blob NULL',
+        ],
+        'description' => [
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'textarea',
+            'eval' => ['rte' => 'tinyMCE', 'tl_class' => 'clr'],
+            'sql' => 'mediumtext NULL',
         ],
         'jumpTo' => [
             'exclude' => true,
