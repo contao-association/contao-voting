@@ -8,6 +8,7 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
         'sql' => [
             'keys' => [
                 'id' => 'primary',
+                'pid,published' => 'index',
             ],
         ],
     ],
@@ -52,7 +53,7 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{name_legend},name,alias,teaser;{text_legend},description,recommendation,attachments',
+        'default' => '{name_legend},name,alias,teaser;{text_legend},description,recommendation,attachments;{publish_legend},published',
     ],
     'fields' => [
         'id' => [
@@ -117,6 +118,14 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
         ],
         'attachmentsOrder' => [
             'sql' => 'blob NULL',
+        ],
+        'published' => [
+            'exclude' => true,
+            'filter' => true,
+            'flag' => 1,
+            'inputType' => 'checkbox',
+            'eval' => ['doNotCopy' => true, 'tl_class' => 'clr'],
+            'sql' => "char(1) NOT NULL default ''"
         ],
         'ayes' => [
             'eval' => ['doNotCopy' => true],

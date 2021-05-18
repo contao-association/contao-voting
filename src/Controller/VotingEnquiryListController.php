@@ -26,7 +26,7 @@ class VotingEnquiryListController extends AbstractVotingController
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         $voting = $this->connection->fetchAssociative('
-            SELECT * FROM tl_voting WHERE alias=?'. (!$this->tokenChecker->isPreviewMode() ? ' AND published=1' : ''),
+            SELECT * FROM tl_voting WHERE alias=?'. (!$this->tokenChecker->isPreviewMode() ? " AND published='1'" : ''),
             [Input::get('auto_item')]
         );
 
@@ -35,7 +35,7 @@ class VotingEnquiryListController extends AbstractVotingController
         }
 
         $enquiries = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_voting_enquiry WHERE pid=? ORDER BY sorting',
+            'SELECT * FROM tl_voting_enquiry WHERE pid=?'. (!$this->tokenChecker->isPreviewMode() ? ' AND published=1' : '').' ORDER BY sorting',
             [$voting['id']]
         );
 

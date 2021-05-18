@@ -30,11 +30,11 @@ class VotingEnquiryReaderController extends AbstractVotingController
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         $enquiry = $this->connection->fetchAssociative(
-            'SELECT *, (SELECT published FROM tl_voting WHERE tl_voting.id=tl_voting_enquiry.pid) AS published FROM tl_voting_enquiry WHERE alias=?',
+            'SELECT *, (SELECT published FROM tl_voting WHERE tl_voting.id=tl_voting_enquiry.pid) AS voting_published FROM tl_voting_enquiry WHERE alias=?',
             [Input::get('auto_item')]
         );
 
-        if (false === $enquiry || (!$this->tokenChecker->isPreviewMode() && !$enquiry['published'])) {
+        if (false === $enquiry || (!$this->tokenChecker->isPreviewMode() && (!$enquiry['published'] || !$enquiry['voting_published']))) {
             throw new PageNotFoundException();
         }
 

@@ -44,6 +44,15 @@
             <trans-unit id="tl_voting_enquiry.text_legend">
                 <source>Description and attachments</source>
             </trans-unit>
+            <trans-unit id="tl_voting_enquiry.published.0">
+                <source>Publish enquiry</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.published.1">
+                <source>Make the voting enquiry publicly visible on the website.</source>
+            </trans-unit>
+            <trans-unit id="tl_voting_enquiry.publish_legend">
+                <source>Publish settings</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

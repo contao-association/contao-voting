@@ -20,9 +20,9 @@ class VotingListController extends AbstractVotingController
     {
         $results = $this->connection->fetchAllAssociative('
             SELECT *,
-                (SELECT COUNT(*) FROM tl_voting_enquiry WHERE pid=tl_voting.id) AS total_enquiries
+                (SELECT COUNT(*) FROM tl_voting_enquiry WHERE pid=tl_voting.id'.(!$this->tokenChecker->isPreviewMode() ? " AND published='1'" : '').') AS total_enquiries
             FROM tl_voting
-            '. (!BE_USER_LOGGED_IN ? " WHERE published=1" : "") . "
+            '. (!$this->tokenChecker->isPreviewMode() ? " WHERE published=1" : "") . "
             ORDER BY start DESC
         ");
 

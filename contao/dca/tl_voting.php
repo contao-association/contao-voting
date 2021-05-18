@@ -9,8 +9,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = [
         'sql' => [
             'keys' => [
                 'id' => 'primary',
-                'alias' => 'index',
-                'published' => 'index',
+                'alias,published' => 'index',
             ],
         ],
     ],
