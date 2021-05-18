@@ -119,9 +119,11 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
             'sql' => 'blob NULL',
         ],
         'ayes' => [
+            'eval' => ['doNotCopy' => true],
             'sql' => 'smallint(5) unsigned NOT NULL default 0',
         ],
         'nays' => [
+            'eval' => ['doNotCopy' => true],
             'sql' => 'smallint(5) unsigned NOT null default 0',
         ],
     ],
