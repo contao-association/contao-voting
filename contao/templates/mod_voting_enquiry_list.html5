@@ -34,11 +34,13 @@
         </div>
 
         <div class="more">
-          <a
-            href="<?= $enquiry['href'] ?>"
-            title="<?= $this->trans('enquiry_title', ['name' => $enquiry['name']], 'ContaoAssociationVotingBundle') ?>"
-            target="_blank"
-          ><?= $this->trans('enquiry_details', [], 'ContaoAssociationVotingBundle') ?></a>
+          <?php if ($enquiry['description']): ?>
+            <a
+              href="<?= $enquiry['href'] ?>"
+              title="<?= $this->trans('enquiry_title', ['name' => $enquiry['name']], 'ContaoAssociationVotingBundle') ?>"
+              target="_blank"
+            ><?= $this->trans('enquiry_details', [], 'ContaoAssociationVotingBundle') ?></a>
+          <?php endif; ?>
         </div>
 
         <?php if ($this->canVote): ?>
