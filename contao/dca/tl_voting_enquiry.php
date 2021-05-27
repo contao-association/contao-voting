@@ -46,6 +46,23 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
                 'icon' => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
             ],
+            'toggle' => [
+                'icon' => 'visible.gif',
+                'attributes' => 'onclick="Backend.getScrollOffset();"',
+                'haste_ajax_operation' => [
+                    'field' => 'published',
+                    'options' => [
+                        [
+                            'value' => '',
+                            'icon' => 'invisible.svg',
+                        ],
+                        [
+                            'value' => '1',
+                            'icon' => 'visible.svg',
+                        ],
+                    ],
+                ],
+            ],
             'show' => [
                 'href' => 'act=show',
                 'icon' => 'show.gif',
