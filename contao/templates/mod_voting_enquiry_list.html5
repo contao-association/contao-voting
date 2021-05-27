@@ -25,9 +25,9 @@
       <div class="enquiry<?= $enquiry['class'] ?><?php if ($this->canVote): ?> can-vote<?php endif; ?>">
         <div class="text">
           <h3>
-            <a href="<?= $enquiry['href']; ?>" target="_blank">
+            <?php if ($enquiry['description']): ?><a href="<?= $enquiry['href']; ?>" target="_blank"><?php endif; ?>
               <?= $enquiry['name'] ?>
-            </a>
+            <?php if ($enquiry['description']): ?></a><?php endif; ?>
           </h3>
 
           <p><?= $enquiry['teaser'] ?></p>
