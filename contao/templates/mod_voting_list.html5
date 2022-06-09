@@ -4,7 +4,7 @@
 <?php if ($this->votings): ?>
   <div class="voting">
     <?php foreach ($this->votings as $voting): ?>
-      <div class="vote<?= $voting['class'] ?>">
+      <div class="vote<?= $voting['class'] ?? '' ?>">
         <a href="<?= $voting['href'] ?>">
           <h3><?= $voting['name'] ?></h3>
           <p class="period">
