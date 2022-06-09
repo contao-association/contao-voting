@@ -5,29 +5,29 @@ declare(strict_types=1);
 namespace ContaoAssociation\VotingBundle\Controller;
 
 use Contao\Config;
+use Contao\Controller;
+use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
+use Contao\Environment;
+use Contao\File;
 use Contao\FilesModel;
 use Contao\Frontend;
 use Contao\Image;
-use Contao\PageModel;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Contao\ModuleModel;
-use Contao\Template;
 use Contao\Input;
-use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\ModuleModel;
+use Contao\PageModel;
 use Contao\StringUtil;
-use Contao\Controller;
-use Contao\File;
-use Contao\Environment;
 use Contao\System;
+use Contao\Template;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @FrontendModule(category="voting")
  */
 class VotingEnquiryReaderController extends AbstractVotingController
 {
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
     {
         $enquiry = $this->connection->fetchAssociative(
             'SELECT *, (SELECT published FROM tl_voting WHERE tl_voting.id=tl_voting_enquiry.pid) AS voting_published FROM tl_voting_enquiry WHERE alias=?',
@@ -68,7 +68,7 @@ class VotingEnquiryReaderController extends AbstractVotingController
         // Send the file to the browser (see #4632 and #8375)
         if ($file) {
             while ($objFiles->next()) {
-                if ($file == $objFiles->path || \dirname($file) == $objFiles->path) {
+                if ($file === $objFiles->path || \dirname($file) === $objFiles->path) {
                     Controller::sendFileToBrowser($file, true);
                 }
             }
@@ -84,26 +84,28 @@ class VotingEnquiryReaderController extends AbstractVotingController
         // Get all files
         while ($objFiles->next()) {
             // Continue if the files has been processed or does not exist
-            if (isset($files[$objFiles->path]) || !file_exists(System::getContainer()
-                        ->getParameter('kernel.project_dir').'/'.$objFiles->path)) {
+            if (
+                isset($files[$objFiles->path])
+                || !file_exists(System::getContainer()->getParameter('kernel.project_dir').'/'.$objFiles->path)
+            ) {
                 continue;
             }
 
             // Single files
-            if ($objFiles->type !== 'file') {
+            if ('file' !== $objFiles->type) {
                 continue;
             }
 
             $objFile = new File($objFiles->path);
 
-            if (!\in_array($objFile->extension, $allowedDownload)) {
+            if (!\in_array($objFile->extension, $allowedDownload, true)) {
                 continue;
             }
 
             $arrMeta = Frontend::getMetaData($objFiles->meta, $objPage->language);
 
             if (empty($arrMeta)) {
-                if ($objPage->rootFallbackLanguage !== null) {
+                if (null !== $objPage->rootFallbackLanguage) {
                     $arrMeta = Frontend::getMetaData($objFiles->meta, $objPage->rootFallbackLanguage);
                 }
             }
@@ -120,7 +122,7 @@ class VotingEnquiryReaderController extends AbstractVotingController
                 $strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
             }
 
-            $strHref .= (strpos($strHref, '?') !== false ? '&amp;' : '?').'file='.System::urlEncode($objFiles->path);
+            $strHref .= (false !== strpos($strHref, '?') ? '&amp;' : '?').'file='.System::urlEncode($objFiles->path);
 
             // Add the image
             $files[$objFiles->path] = [
@@ -144,7 +146,7 @@ class VotingEnquiryReaderController extends AbstractVotingController
 
         if (!empty($tmp) && \is_array($tmp)) {
             // Remove all values
-            $arrOrder = array_map(static function () {}, array_flip($tmp));
+            $arrOrder = array_map(static function (): void {}, array_flip($tmp));
 
             // Move the matching elements to their position in $arrOrder
             foreach ($files as $k => $v) {

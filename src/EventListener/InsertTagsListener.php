@@ -28,12 +28,12 @@ class InsertTagsListener
     {
         $parts = StringUtil::trimsplit('::', $insertTag);
 
-        if ($parts[0] !== 'voting') {
+        if ('voting' !== $parts[0]) {
             return false;
         }
 
-        $voting = $this->connection->fetchAssociative('
-            SELECT * FROM tl_voting WHERE alias=?'. (!$this->tokenChecker->isPreviewMode() ? ' AND published=1' : ''),
+        $voting = $this->connection->fetchAssociative(
+            'SELECT * FROM tl_voting WHERE alias=?'.(!$this->tokenChecker->isPreviewMode() ? ' AND published=1' : ''),
             [Input::get('auto_item')]
         );
 

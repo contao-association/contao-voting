@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace ContaoAssociation\VotingBundle\Controller;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
-use Symfony\Component\Security\Core\Security;
-use Doctrine\DBAL\Connection;
-use Contao\FrontendUser;
-use Contao\Date;
-use Contao\StringUtil;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
+use Contao\Date;
+use Contao\FrontendUser;
+use Contao\StringUtil;
+use Doctrine\DBAL\Connection;
+use Symfony\Component\Security\Core\Security;
 
 abstract class AbstractVotingController extends AbstractFrontendModuleController
 {
@@ -38,7 +38,7 @@ abstract class AbstractVotingController extends AbstractFrontendModuleController
         }
 
         // User is not in an allowed member group
-        if (count(array_intersect($user->groups, StringUtil::deserialize($voting['groups'], true))) < 1) {
+        if (\count(array_intersect($user->groups, StringUtil::deserialize($voting['groups'], true))) < 1) {
             return false;
         }
 

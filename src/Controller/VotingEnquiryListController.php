@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 namespace ContaoAssociation\VotingBundle\Controller;
 
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Contao\ModuleModel;
-use Contao\Template;
-use Contao\Input;
+use Contao\Controller;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
+use Contao\FormRadioButton;
+use Contao\FrontendUser;
+use Contao\Input;
+use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
-use Contao\FormRadioButton;
+use Contao\Template;
 use Contao\Widget;
-use Contao\Controller;
-use Contao\FrontendUser;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @FrontendModule(category="voting")
  */
 class VotingEnquiryListController extends AbstractVotingController
 {
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
     {
-        $voting = $this->connection->fetchAssociative('
-            SELECT * FROM tl_voting WHERE alias=?'. (!$this->tokenChecker->isPreviewMode() ? " AND published='1'" : ''),
+        $voting = $this->connection->fetchAssociative(
+            'SELECT * FROM tl_voting WHERE alias=?'.(!$this->tokenChecker->isPreviewMode() ? " AND published='1'" : ''),
             [Input::get('auto_item')]
         );
 
@@ -35,7 +35,7 @@ class VotingEnquiryListController extends AbstractVotingController
         }
 
         $enquiries = $this->connection->fetchAllAssociative(
-            'SELECT * FROM tl_voting_enquiry WHERE pid=?'. (!$this->tokenChecker->isPreviewMode() ? ' AND published=1' : '').' ORDER BY sorting',
+            'SELECT * FROM tl_voting_enquiry WHERE pid=?'.(!$this->tokenChecker->isPreviewMode() ? ' AND published=1' : '').' ORDER BY sorting',
             [$voting['id']]
         );
 
@@ -53,10 +53,10 @@ class VotingEnquiryListController extends AbstractVotingController
 
         // Setup form variables
         $doNotSubmit = false;
-        $strFormId = 'voting_' . $model->id;
+        $strFormId = 'voting_'.$model->id;
         $arrWidgets = [];
 
-        $arrEnquiries = array();
+        $arrEnquiries = [];
 
         foreach ($enquiries as $enquiry) {
             $arrEnquiries[$enquiry['id']] = $enquiry;
@@ -64,15 +64,15 @@ class VotingEnquiryListController extends AbstractVotingController
 
             // Setup form widgets
             if ($blnCanVote) {
-                $strWidget = 'enquiry_' . $enquiry['id'];
+                $strWidget = 'enquiry_'.$enquiry['id'];
 
-                /** @type FormRadioButton $objWidget */
+                /** @var FormRadioButton $objWidget */
                 $objWidget = new $GLOBALS['TL_FFL']['radio'](Widget::getAttributesFromDca([
-                    'name'      => $strWidget,
+                    'name' => $strWidget,
                     'inputType' => 'radio',
-                    'options'   => ['yes', 'no', 'abstention'],
+                    'options' => ['yes', 'no', 'abstention'],
                     'reference' => $GLOBALS['TL_LANG']['MSC']['voting_options'],
-                    'eval'      => ['mandatory'=>true]
+                    'eval' => ['mandatory' => true],
                 ], $strWidget));
 
                 // Validate the widget
@@ -91,7 +91,6 @@ class VotingEnquiryListController extends AbstractVotingController
 
         // Process the voting
         if ($blnCanVote && !$doNotSubmit && Input::post('FORM_SUBMIT') === $strFormId) {
-
             $this->connection->executeStatement(
                 'LOCK TABLES tl_voting_enquiry WRITE, tl_voting_registry WRITE'
             );
@@ -102,13 +101,12 @@ class VotingEnquiryListController extends AbstractVotingController
                 $user = $this->security->getUser();
 
                 foreach ($arrWidgets as $intEnquiry => $objWidget) {
-
                     // Do not insert vote record if user chose abstention
                     if ('yes' !== $objWidget->value && 'no' !== $objWidget->value) {
                         continue;
                     }
 
-                    $strField = ('yes' === $objWidget->value) ? 'ayes' : 'nays';
+                    $strField = 'yes' === $objWidget->value ? 'ayes' : 'nays';
 
                     $this->connection->executeStatement(
                         "UPDATE tl_voting_enquiry SET $strField=($strField+1) WHERE id=?",
@@ -122,7 +120,7 @@ class VotingEnquiryListController extends AbstractVotingController
                     [
                         'tstamp' => time(),
                         'voting' => $voting['id'],
-                        'member' => $user->id
+                        'member' => $user->id,
                     ]
                 );
             }
@@ -133,7 +131,7 @@ class VotingEnquiryListController extends AbstractVotingController
         }
 
         $template->voting = $voting;
-        $template->totalEnquiries = count($enquiries);
+        $template->totalEnquiries = \count($enquiries);
         $template->period = $this->getPeriod($voting);
 
         $template->enquiries = $arrEnquiries;

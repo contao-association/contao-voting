@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace ContaoAssociation\VotingBundle\EventListener;
 
 use Contao\CoreBundle\ServiceAnnotation\Callback;
-use Doctrine\DBAL\Connection;
-use Contao\DataContainer;
 use Contao\CoreBundle\Slug\Slug;
+use Contao\DataContainer;
+use Doctrine\DBAL\Connection;
 
 /**
  * @Callback(table="tl_voting", target="fields.alias.save")
@@ -30,12 +30,10 @@ class AliasListener
             return $varValue;
         }
 
-        return $this->slug->generate
-        (
+        return $this->slug->generate(
             $dc->activeRecord->name,
             $dc->activeRecord->id,
-            function (string $alias) use ($dc)
-            {
+            function (string $alias) use ($dc) {
                 return $this->connection->fetchOne(
                     'SELECT COUNT(*) FROM '.$dc->table.' WHERE alias=?',
                     [$alias]
