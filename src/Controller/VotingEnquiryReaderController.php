@@ -111,7 +111,7 @@ class VotingEnquiryReaderController extends AbstractVotingController
             }
 
             // Use the file name as title if none is given
-            if (!$arrMeta['title']) {
+            if (empty($arrMeta['title'])) {
                 $arrMeta['title'] = StringUtil::specialchars($objFile->basename);
             }
 
@@ -130,8 +130,8 @@ class VotingEnquiryReaderController extends AbstractVotingController
                 'uuid' => $objFiles->uuid,
                 'name' => $objFile->basename,
                 'title' => StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['download'], $objFile->basename)),
-                'link' => $arrMeta['title'],
-                'caption' => $arrMeta['caption'],
+                'link' => $arrMeta['title'] ?? '',
+                'caption' => $arrMeta['caption'] ?? '',
                 'href' => $strHref,
                 'filesize' => System::getReadableSize($objFile->filesize),
                 'icon' => Image::getPath($objFile->icon),
