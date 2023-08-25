@@ -10,19 +10,17 @@ use Contao\Date;
 use Contao\FrontendUser;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Security\Core\Security;
 
 abstract class AbstractVotingController extends AbstractFrontendModuleController
 {
-    protected Security $security;
-    protected Connection $connection;
-    protected TokenChecker $tokenChecker;
-
-    public function __construct(Security $security, Connection $connection, TokenChecker $tokenChecker)
-    {
-        $this->security = $security;
-        $this->connection = $connection;
-        $this->tokenChecker = $tokenChecker;
+    public function __construct(
+        protected readonly Security $security,
+        protected readonly Connection $connection,
+        protected readonly TokenChecker $tokenChecker,
+        protected readonly Filesystem $filesystem,
+    ) {
     }
 
     protected function canUserVote(array $voting): bool
@@ -60,7 +58,7 @@ abstract class AbstractVotingController extends AbstractFrontendModuleController
 
         $votes = $this->connection->fetchOne(
             'SELECT COUNT(*) AS votes FROM tl_voting_registry WHERE voting=? AND member=?',
-            [$voting['id'], $user->id]
+            [$voting['id'], $user->id],
         );
 
         return $votes > 0;
@@ -80,7 +78,7 @@ abstract class AbstractVotingController extends AbstractFrontendModuleController
         return sprintf(
             '%s – %s',
             Date::parse($dateFormat, $voting['start']),
-            Date::parse($dateFormat, $voting['stop'])
+            Date::parse($dateFormat, $voting['stop']),
         );
     }
 }

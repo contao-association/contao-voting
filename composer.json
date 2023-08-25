@@ -17,7 +17,8 @@
         "contao/core-bundle": "^4.13"
     },
     "require-dev": {
-        "contao/manager-plugin": "^2.9"
+        "contao/manager-plugin": "^2.9",
+        "terminal42/contao-build-tools": "dev-main"
     },
     "conflict": {
         "contao/manager-plugin": "<2.9 || >=3.0"
@@ -29,8 +30,5 @@
     },
     "extra": {
         "contao-manager-plugin": "ContaoAssociation\\VotingBundle\\ContaoManager\\Plugin"
-    },
-    "scripts": {
-        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check src/ --fix --ansi"
     }
 }

@@ -4,27 +4,22 @@ declare(strict_types=1);
 
 namespace ContaoAssociation\VotingBundle\EventListener;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Input;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 
-/**
- * @Hook("replaceInsertTags")
- */
+#[AsHook('replaceInsertTags')]
 class InsertTagsListener
 {
-    private Connection $connection;
-    private TokenChecker $tokenChecker;
-
-    public function __construct(Connection $connection, TokenChecker $tokenChecker)
-    {
-        $this->connection = $connection;
-        $this->tokenChecker = $tokenChecker;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly TokenChecker $tokenChecker,
+    ) {
     }
 
-    public function __invoke(string $insertTag)
+    public function __invoke(string $insertTag): string|false
     {
         $parts = StringUtil::trimsplit('::', $insertTag);
 
@@ -34,7 +29,7 @@ class InsertTagsListener
 
         $voting = $this->connection->fetchAssociative(
             'SELECT * FROM tl_voting WHERE alias=?'.(!$this->tokenChecker->isPreviewMode() ? ' AND published=1' : ''),
-            [Input::get('auto_item')]
+            [Input::get('auto_item')],
         );
 
         if (false === $voting) {

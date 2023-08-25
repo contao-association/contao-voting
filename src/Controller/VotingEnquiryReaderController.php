@@ -6,8 +6,8 @@ namespace ContaoAssociation\VotingBundle\Controller;
 
 use Contao\Config;
 use Contao\Controller;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
 use Contao\File;
 use Contao\FilesModel;
@@ -22,16 +22,14 @@ use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @FrontendModule(category="voting")
- */
+#[AsFrontendModule(category: 'voting')]
 class VotingEnquiryReaderController extends AbstractVotingController
 {
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
     {
         $enquiry = $this->connection->fetchAssociative(
             'SELECT *, (SELECT published FROM tl_voting WHERE tl_voting.id=tl_voting_enquiry.pid) AS voting_published FROM tl_voting_enquiry WHERE alias=?',
-            [Input::get('auto_item')]
+            [Input::get('auto_item')],
         );
 
         if (false === $enquiry || (!$this->tokenChecker->isPreviewMode() && (!$enquiry['published'] || !$enquiry['voting_published']))) {
@@ -42,13 +40,14 @@ class VotingEnquiryReaderController extends AbstractVotingController
             $template->{$k} = $v;
         }
 
-        $template->attachments = $this->generateAttachements($enquiry);
+        $template->attachments = $this->generateAttachments($enquiry);
 
         return $template->getResponse();
     }
 
-    private function generateAttachements(array $enquiry)
+    private function generateAttachments(array $enquiry): array
     {
+        $files = [];
         $attachments = StringUtil::deserialize($enquiry['attachments']);
 
         // Return if there are no files
@@ -60,7 +59,7 @@ class VotingEnquiryReaderController extends AbstractVotingController
         $objFiles = FilesModel::findMultipleByUuids($attachments);
 
         if (null === $objFiles) {
-            return '';
+            return [];
         }
 
         $file = Input::get('file', true);
@@ -68,7 +67,7 @@ class VotingEnquiryReaderController extends AbstractVotingController
         // Send the file to the browser (see #4632 and #8375)
         if ($file) {
             while ($objFiles->next()) {
-                if ($file === $objFiles->path || \dirname($file) === $objFiles->path) {
+                if ($file === $objFiles->path || \dirname((string) $file) === $objFiles->path) {
                     Controller::sendFileToBrowser($file, true);
                 }
             }
@@ -79,14 +78,14 @@ class VotingEnquiryReaderController extends AbstractVotingController
         /** @var PageModel $objPage */
         global $objPage;
 
-        $allowedDownload = StringUtil::trimsplit(',', strtolower(Config::get('allowedDownload')));
+        $allowedDownload = StringUtil::trimsplit(',', strtolower((string) Config::get('allowedDownload')));
 
         // Get all files
         while ($objFiles->next()) {
             // Continue if the files has been processed or does not exist
             if (
                 isset($files[$objFiles->path])
-                || !file_exists(System::getContainer()->getParameter('kernel.project_dir').'/'.$objFiles->path)
+                || !$this->filesystem->exists(System::getContainer()->getParameter('kernel.project_dir').'/'.$objFiles->path)
             ) {
                 continue;
             }
@@ -119,10 +118,10 @@ class VotingEnquiryReaderController extends AbstractVotingController
 
             // Remove an existing file parameter (see #5683)
             if (isset($_GET['file'])) {
-                $strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $strHref);
+                $strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', (string) $strHref);
             }
 
-            $strHref .= (false !== strpos($strHref, '?') ? '&amp;' : '?').'file='.System::urlEncode($objFiles->path);
+            $strHref .= (str_contains((string) $strHref, '?') ? '&amp;' : '?').'file='.System::urlEncode($objFiles->path);
 
             // Add the image
             $files[$objFiles->path] = [

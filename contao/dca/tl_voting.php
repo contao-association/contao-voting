@@ -109,7 +109,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = [
             'exclude' => true,
             'inputType' => 'pageTree',
             'eval' => ['fieldType' => 'radio'],
-            'sql' => 'int(10) unsigned NOT NULL default 0'
+            'sql' => 'int(10) unsigned NOT NULL default 0',
         ],
         'published' => [
             'exclude' => true,
@@ -117,7 +117,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = [
             'flag' => 1,
             'inputType' => 'checkbox',
             'eval' => ['doNotCopy' => true, 'tl_class' => 'clr'],
-            'sql' => "char(1) NOT NULL default ''"
+            'sql' => "char(1) NOT NULL default ''",
         ],
         'start' => [
             'exclude' => true,
@@ -128,7 +128,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = [
                 'datepicker' => true,
                 'tl_class' => 'w50 wizard',
             ],
-            'sql' => "varchar(10) NOT NULL default ''"
+            'sql' => "varchar(10) NOT NULL default ''",
         ],
         'stop' => [
             'exclude' => true,
@@ -139,7 +139,7 @@ $GLOBALS['TL_DCA']['tl_voting'] = [
                 'datepicker' => true,
                 'tl_class' => 'w50 wizard',
             ],
-            'sql' => "varchar(10) NOT NULL default ''"
+            'sql' => "varchar(10) NOT NULL default ''",
         ],
     ],
 ];

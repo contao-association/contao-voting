@@ -1,5 +1,7 @@
 <?php
 
+use Contao\Config;
+
 $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
     'config' => [
         'dataContainer' => 'Table',
@@ -13,20 +15,18 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
         ],
     ],
     'list' => [
-        'sorting' =>
-            [
-                'mode' => 4,
-                'fields' => ['sorting'],
-                'headerFields' => ['name', 'published', 'start', 'stop'],
-                'panelLayout' => 'filter;search,limit',
-            ],
+        'sorting' => [
+            'mode' => 4,
+            'fields' => ['sorting'],
+            'headerFields' => ['name', 'published', 'start', 'stop'],
+            'panelLayout' => 'filter;search,limit',
+        ],
         'global_operations' => [
-            'all' =>
-                [
-                    'href' => 'act=select',
-                    'class' => 'header_edit_all',
-                    'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
-                ],
+            'all' => [
+                'href' => 'act=select',
+                'class' => 'header_edit_all',
+                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+            ],
         ],
         'operations' => [
             'edit' => [
@@ -117,7 +117,7 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
         'attachments' => [
             'exclude' => true,
             'inputType' => 'fileTree',
-            'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'filesOnly' => true, 'orderField' => 'attachmentsOrder', 'extensions' => \Contao\Config::get('allowedDownload'), 'tl_class' => 'clr m12'],
+            'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'filesOnly' => true, 'orderField' => 'attachmentsOrder', 'extensions' => Config::get('allowedDownload'), 'tl_class' => 'clr m12'],
             'sql' => 'blob NULL',
         ],
         'attachmentsOrder' => [
@@ -129,7 +129,7 @@ $GLOBALS['TL_DCA']['tl_voting_enquiry'] = [
             'flag' => 1,
             'inputType' => 'checkbox',
             'eval' => ['doNotCopy' => true, 'tl_class' => 'clr'],
-            'sql' => "char(1) NOT NULL default ''"
+            'sql' => "char(1) NOT NULL default ''",
         ],
         'ayes' => [
             'eval' => ['doNotCopy' => true],

@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace ContaoAssociation\VotingBundle\Controller;
 
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @FrontendModule(category="voting")
- */
+#[AsFrontendModule(category: 'voting')]
 class VotingListController extends AbstractVotingController
 {
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
@@ -25,10 +23,6 @@ class VotingListController extends AbstractVotingController
             '.(!$this->tokenChecker->isPreviewMode() ? ' WHERE published=1' : '').'
             ORDER BY start DESC
         ');
-
-        if (false === $results) {
-            return new Response();
-        }
 
         $strUrl = '';
 

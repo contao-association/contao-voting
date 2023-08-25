@@ -6,8 +6,8 @@ $GLOBALS['TL_DCA']['tl_voting_registry'] = [
             'keys' => [
                 'id' => 'primary',
                 'voting,member' => 'index',
-            ]
-        ]
+            ],
+        ],
     ],
     'fields' => [
         'id' => [
@@ -22,5 +22,5 @@ $GLOBALS['TL_DCA']['tl_voting_registry'] = [
         'member' => [
             'sql' => 'int(10) unsigned NOT NULL default 0',
         ],
-    ]
+    ],
 ];

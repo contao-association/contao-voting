@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ContaoAssociation\VotingBundle\Controller;
 
 use Contao\Controller;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FormRadioButton;
 use Contao\FrontendUser;
 use Contao\Input;
@@ -18,16 +18,14 @@ use Contao\Widget;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @FrontendModule(category="voting")
- */
+#[AsFrontendModule(category: 'voting')]
 class VotingEnquiryListController extends AbstractVotingController
 {
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
     {
         $voting = $this->connection->fetchAssociative(
             'SELECT * FROM tl_voting WHERE alias=?'.(!$this->tokenChecker->isPreviewMode() ? " AND published='1'" : ''),
-            [Input::get('auto_item')]
+            [Input::get('auto_item')],
         );
 
         if (false === $voting) {
@@ -36,7 +34,7 @@ class VotingEnquiryListController extends AbstractVotingController
 
         $enquiries = $this->connection->fetchAllAssociative(
             'SELECT * FROM tl_voting_enquiry WHERE pid=?'.(!$this->tokenChecker->isPreviewMode() ? ' AND published=1' : '').' ORDER BY sorting',
-            [$voting['id']]
+            [$voting['id']],
         );
 
         $strUrl = '';
@@ -92,7 +90,7 @@ class VotingEnquiryListController extends AbstractVotingController
         // Process the voting
         if ($blnCanVote && !$doNotSubmit && Input::post('FORM_SUBMIT') === $strFormId) {
             $this->connection->executeStatement(
-                'LOCK TABLES tl_voting_enquiry WRITE, tl_voting_registry WRITE'
+                'LOCK TABLES tl_voting_enquiry WRITE, tl_voting_registry WRITE',
             );
 
             // Check voting status again after tables are locked
@@ -110,7 +108,7 @@ class VotingEnquiryListController extends AbstractVotingController
 
                     $this->connection->executeStatement(
                         "UPDATE tl_voting_enquiry SET $strField=($strField+1) WHERE id=?",
-                        [$intEnquiry]
+                        [$intEnquiry],
                     );
                 }
 
@@ -121,7 +119,7 @@ class VotingEnquiryListController extends AbstractVotingController
                         'tstamp' => time(),
                         'voting' => $voting['id'],
                         'member' => $user->id,
-                    ]
+                    ],
                 );
             }
 

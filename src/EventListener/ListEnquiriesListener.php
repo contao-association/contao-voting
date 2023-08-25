@@ -4,19 +4,14 @@ declare(strict_types=1);
 
 namespace ContaoAssociation\VotingBundle\EventListener;
 
-use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Doctrine\DBAL\Connection;
 
-/**
- * @Callback(table="tl_voting_enquiry", target="list.sorting.child_record")
- */
+#[AsCallback(table: 'tl_voting_enquiry', target: 'list.sorting.child_record')]
 class ListEnquiriesListener
 {
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function __invoke(array $arrRow): string
@@ -26,7 +21,7 @@ class ListEnquiriesListener
         if (null === $total) {
             $total = $this->connection->fetchOne(
                 'SELECT COUNT(*) AS total FROM tl_voting_registry WHERE voting=?',
-                [$arrRow['pid']]
+                [$arrRow['pid']],
             );
         }
 
