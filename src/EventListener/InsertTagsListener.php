@@ -32,10 +32,10 @@ class InsertTagsListener
             [Input::get('auto_item')],
         );
 
-        if (false === $voting) {
+        if (false === $voting || !isset($voting[$parts[1]])) {
             return '';
         }
 
-        return $voting[$parts[1]];
+        return (string) $voting[$parts[1]];
     }
 }
