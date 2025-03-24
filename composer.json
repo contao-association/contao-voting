@@ -14,7 +14,15 @@
     ],
     "require": {
         "php": "^8.1",
-        "contao/core-bundle": "^4.13"
+        "contao/core-bundle": "^5.3",
+        "codefog/contao-haste": "^5.2",
+        "doctrine/dbal": "^3.0",
+        "symfony/config": "^6.4 || ^7.0",
+        "symfony/dependency-injection": "^6.4 || ^7.0",
+        "symfony/filesystem": "^6.4 || ^7.0",
+        "symfony/http-foundation": "^6.4 || ^7.0",
+        "symfony/http-kernel": "^6.4 || ^7.0",
+        "symfony/security-core": "^6.4 || ^7.0"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.9",
@@ -30,5 +38,13 @@
     },
     "extra": {
         "contao-manager-plugin": "ContaoAssociation\\VotingBundle\\ContaoManager\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": false,
+            "php-http/discovery": false,
+            "contao/manager-plugin": false,
+            "terminal42/contao-build-tools": true
+        }
     }
 }

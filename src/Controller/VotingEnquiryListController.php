@@ -4,24 +4,48 @@ declare(strict_types=1);
 
 namespace ContaoAssociation\VotingBundle\Controller;
 
-use Contao\Controller;
-use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Codefog\HasteBundle\Formatter;
+use Contao\BackendTemplate;
+use Contao\ContentModel;
+use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\FormRadioButton;
+use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
+use Contao\CoreBundle\Twig\FragmentTemplate;
+use Contao\FormRadio;
 use Contao\FrontendUser;
 use Contao\Input;
-use Contao\ModuleModel;
 use Contao\PageModel;
-use Contao\StringUtil;
-use Contao\Template;
 use Contao\Widget;
+use ContaoAssociation\VotingBundle\ContaoAssociationVotingPermissions;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(category: 'voting')]
-class VotingEnquiryListController extends AbstractVotingController
+#[AsContentElement(category: 'voting')]
+class VotingEnquiryListController extends AbstractContentElementController
 {
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly TokenChecker $tokenChecker,
+        private readonly Formatter $formatter,
+    ) {
+    }
+
+    public function __invoke(Request $request, ContentModel $model, string $section, array|null $classes = null): Response
+    {
+        if ($this->isBackendScope($request)) {
+            $template = new BackendTemplate('be_wildcard');
+            $template->wildcard = '## ENQUIRY LIST ##';
+
+            return $template->getResponse();
+        }
+
+        return parent::__invoke($request, $model, $section, $classes);
+    }
+
+    protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response
     {
         $voting = $this->connection->fetchAssociative(
             'SELECT * FROM tl_voting WHERE alias=?'.(!$this->tokenChecker->isPreviewMode() ? " AND published='1'" : ''),
@@ -37,17 +61,13 @@ class VotingEnquiryListController extends AbstractVotingController
             [$voting['id']],
         );
 
-        $strUrl = '';
+        $jumpTo = PageModel::findById($model->jumpTo);
 
-        if ($model->jumpTo > 0) {
-            $jumpTo = PageModel::findByPk($model->jumpTo);
-
-            if (null !== $jumpTo) {
-                $strUrl = $jumpTo->getFrontendUrl('/%s');
-            }
+        if (!$jumpTo) {
+            throw new \RuntimeException('Missing jumpTo for tl_content.'.$model->id.' ('.self::class.')');
         }
 
-        $blnCanVote = $this->canUserVote($voting);
+        $canVote = $this->isGranted(ContaoAssociationVotingPermissions::CAN_VOTE, $voting);
 
         // Setup form variables
         $doNotSubmit = false;
@@ -58,20 +78,22 @@ class VotingEnquiryListController extends AbstractVotingController
 
         foreach ($enquiries as $enquiry) {
             $arrEnquiries[$enquiry['id']] = $enquiry;
-            $arrEnquiries[$enquiry['id']]['href'] = sprintf($strUrl, $enquiry['alias']);
+            $arrEnquiries[$enquiry['id']]['href'] = $this->generateContentUrl($jumpTo, ['parameters' => '/'.$enquiry['alias']]);
 
             // Setup form widgets
-            if ($blnCanVote) {
+            if ($canVote) {
                 $strWidget = 'enquiry_'.$enquiry['id'];
 
-                /** @var FormRadioButton $objWidget */
-                $objWidget = new $GLOBALS['TL_FFL']['radio'](Widget::getAttributesFromDca([
-                    'name' => $strWidget,
-                    'inputType' => 'radio',
-                    'options' => ['yes', 'no', 'abstention'],
-                    'reference' => $GLOBALS['TL_LANG']['MSC']['voting_options'],
-                    'eval' => ['mandatory' => true],
-                ], $strWidget));
+                $objWidget = new FormRadio(Widget::getAttributesFromDca(
+                    [
+                        'name' => $strWidget,
+                        'inputType' => 'radio',
+                        'options' => ['yes', 'no', 'abstention'],
+                        'reference' => $GLOBALS['TL_LANG']['MSC']['voting_options'],
+                        'eval' => ['mandatory' => true],
+                    ],
+                    $strWidget,
+                ));
 
                 // Validate the widget
                 if (Input::post('FORM_SUBMIT') === $strFormId) {
@@ -88,15 +110,15 @@ class VotingEnquiryListController extends AbstractVotingController
         }
 
         // Process the voting
-        if ($blnCanVote && !$doNotSubmit && Input::post('FORM_SUBMIT') === $strFormId) {
+        if ($canVote && !$doNotSubmit && Input::post('FORM_SUBMIT') === $strFormId) {
             $this->connection->executeStatement(
                 'LOCK TABLES tl_voting_enquiry WRITE, tl_voting_registry WRITE',
             );
 
             // Check voting status again after tables are locked
-            if ($this->canUserVote($voting)) {
+            if ($this->isGranted(ContaoAssociationVotingPermissions::CAN_VOTE, $voting)) {
                 /** @var FrontendUser $user */
-                $user = $this->security->getUser();
+                $user = $this->getUser();
 
                 foreach ($arrWidgets as $intEnquiry => $objWidget) {
                     // Do not insert vote record if user chose abstention
@@ -113,31 +135,43 @@ class VotingEnquiryListController extends AbstractVotingController
                 }
 
                 // Store the voting in registry
-                $this->connection->insert(
-                    'tl_voting_registry',
-                    [
-                        'tstamp' => time(),
-                        'voting' => $voting['id'],
-                        'member' => $user->id,
-                    ],
-                );
+                $this->connection->insert('tl_voting_registry', [
+                    'tstamp' => time(),
+                    'voting' => $voting['id'],
+                    'member' => $user->id,
+                ]);
             }
 
             $this->connection->executeStatement('UNLOCK TABLES');
 
-            Controller::reload();
+            throw new RedirectResponseException($request->getUri());
         }
 
         $template->voting = $voting;
         $template->totalEnquiries = \count($enquiries);
-        $template->period = $this->getPeriod($voting);
+        $template->period = \sprintf('%s – %s', $this->formatter->date((int) $voting['start']), $this->formatter->date((int) $voting['stop']));
 
         $template->enquiries = $arrEnquiries;
-        $template->canVote = $blnCanVote;
-        $template->hasVoted = $this->hasUserVoted($voting);
+        $template->canVote = $canVote;
+        $template->hasVoted = $this->hasVoted($voting);
         $template->formId = $strFormId;
-        $template->submit = StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['voting_vote']);
 
         return $template->getResponse();
+    }
+
+    private function hasVoted(array $voting): bool
+    {
+        $user = $this->getUser();
+
+        if (!$user instanceof FrontendUser) {
+            return false;
+        }
+
+        $votes = $this->connection->fetchOne(
+            'SELECT COUNT(*) AS votes FROM tl_voting_registry WHERE voting=? AND member=?',
+            [$voting['id'], $user->id],
+        );
+
+        return $votes > 0;
     }
 }

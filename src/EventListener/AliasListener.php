@@ -25,9 +25,11 @@ class AliasListener
             return $varValue;
         }
 
+        $record = $dc->getCurrentRecord();
+
         return $this->slug->generate(
-            $dc->activeRecord->name,
-            $dc->activeRecord->id,
+            $record['name'],
+            $record['id'],
             fn (string $alias) => $this->connection->fetchOne(
                 'SELECT COUNT(*) FROM '.$dc->table.' WHERE alias=?',
                 [$alias],

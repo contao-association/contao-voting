@@ -4,17 +4,41 @@ declare(strict_types=1);
 
 namespace ContaoAssociation\VotingBundle\Controller;
 
-use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
-use Contao\ModuleModel;
+use Codefog\HasteBundle\Formatter;
+use Contao\BackendTemplate;
+use Contao\ContentModel;
+use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
+use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\PageModel;
-use Contao\Template;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(category: 'voting')]
-class VotingListController extends AbstractVotingController
+#[AsContentElement(category: 'voting')]
+class VotingListController extends AbstractContentElementController
 {
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly TokenChecker $tokenChecker,
+        private readonly Formatter $formatter,
+    ) {
+    }
+
+    public function __invoke(Request $request, ContentModel $model, string $section, array|null $classes = null): Response
+    {
+        if ($this->isBackendScope($request)) {
+            $template = new BackendTemplate('be_wildcard');
+            $template->wildcard = '## VOTING LIST ##';
+
+            return $template->getResponse();
+        }
+
+        return parent::__invoke($request, $model, $section, $classes);
+    }
+
+    protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response
     {
         $results = $this->connection->fetchAllAssociative('
             SELECT *,
@@ -24,32 +48,18 @@ class VotingListController extends AbstractVotingController
             ORDER BY start DESC
         ');
 
-        $strUrl = '';
-
-        if ($model->jumpTo > 0) {
-            $jumpTo = PageModel::findByPk($model->jumpTo);
-
-            if (null !== $jumpTo) {
-                $strUrl = $jumpTo->getFrontendUrl('/%s');
-            }
-        }
-
         $votings = [];
 
-        foreach ($results as $row) {
-            $currentUrl = $strUrl;
+        foreach ($results as $voting) {
+            $jumpTo = $voting['jumpTo'] > 0 ? PageModel::findById($voting['jumpTo']) : PageModel::findById($model->jumpTo);
 
-            if ($row['jumpTo'] > 0) {
-                $jumpTo = PageModel::findByPk($row['jumpTo']);
-
-                if (null !== $jumpTo) {
-                    $currentUrl = $jumpTo->getFrontendUrl('/%s');
-                }
+            if (!$jumpTo) {
+                throw new \RuntimeException('Missing jumpTo for tl_voting.'.$voting['id'].' / tl_content.'.$model->id.' ('.self::class.')');
             }
 
-            $votings[$row['id']] = $row;
-            $votings[$row['id']]['href'] = sprintf($currentUrl, $row['alias']);
-            $votings[$row['id']]['period'] = $this->getPeriod($row);
+            $votings[$voting['id']] = $voting;
+            $votings[$voting['id']]['href'] = $this->generateContentUrl($jumpTo, ['parameters' => '/'.$voting['alias']]);
+            $votings[$voting['id']]['period'] = \sprintf('%s – %s', $this->formatter->date((int) $voting['start']), $this->formatter->date((int) $voting['stop']));
         }
 
         $template->votings = $votings;

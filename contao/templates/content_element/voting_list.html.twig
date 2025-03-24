@@ -1,0 +1,19 @@
+{% extends "@Contao/content_element/_base.html.twig" %}
+{% trans_default_domain 'ContaoAssociationVotingBundle' %}
+
+{% block content %}
+    <div class="voting">
+        {% for voting in votings %}
+            <div class="vote {{ voting.class|default }}">
+                <a href="{{ voting.href }}">
+                    <h3>{{ voting.name }}</h3>
+                    <p class="period">
+                        <strong>{{ 'period'|trans }}:</strong>
+                        {{ voting.period }}
+                    </p>
+                    <p class="total">{{ 'total_enquiries'|trans({total: voting.total_enquiries}) }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

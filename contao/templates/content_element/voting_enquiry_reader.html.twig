@@ -1,0 +1,26 @@
+{% extends "@Contao/content_element/_base.html.twig" %}
+{% use "@Contao/component/_download.html.twig" %}
+
+{% block content %}
+
+    <h2>{{ name }}</h2>
+
+    <div class="description">
+        {{ description|default(teaser)|csp_inline_styles|insert_tag|encode_email|raw }}
+    </div>
+
+    {% if attachments %}
+        <div class="attachments">
+            {% for attachment in attachments %}
+                {% with {download: attachment} %}{{ block('download_component') }}{% endwith %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if recommendation %}
+        <div class="recommendation">
+            {{ recommendation|csp_inline_styles|insert_tag|encode_email|raw }}
+        </div>
+    {% endif %}
+
+{% endblock %}

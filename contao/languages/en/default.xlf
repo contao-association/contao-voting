@@ -2,6 +2,18 @@
 <xliff version="1.1">
     <file source-language="en">
         <body>
+            <trans-unit id="CTE.voting">
+                <source>Voting</source>
+            </trans-unit>
+            <trans-unit id="CTE.voting_list.0">
+                <source>Voting list</source>
+            </trans-unit>
+            <trans-unit id="CTE.voting_enquiry_list.0">
+                <source>Enquiry list</source>
+            </trans-unit>
+            <trans-unit id="CTE.voting_enquiry_reader.0">
+                <source>Enquiry reader</source>
+            </trans-unit>
             <trans-unit id="MSC.voting_vote">
                 <source>Vote</source>
             </trans-unit>

@@ -12,7 +12,7 @@ use ContaoAssociation\VotingBundle\ContaoAssociationVotingBundle;
 
 class Plugin implements BundlePluginInterface
 {
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [
             (new BundleConfig(ContaoAssociationVotingBundle::class))->setLoadAfter([ContaoCoreBundle::class]),

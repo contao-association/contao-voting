@@ -5,18 +5,6 @@
             <trans-unit id="MOD.voting.0">
                 <source>Voting</source>
             </trans-unit>
-            <trans-unit id="FMD.voting">
-                <source>Voting</source>
-            </trans-unit>
-            <trans-unit id="FMD.voting_list.0">
-                <source>Voting list</source>
-            </trans-unit>
-            <trans-unit id="FMD.voting_enquiry_list.0">
-                <source>Enquiry list</source>
-            </trans-unit>
-            <trans-unit id="FMD.voting_enquiry_reader.0">
-                <source>Enquiry reader</source>
-            </trans-unit>
         </body>
     </file>
 </xliff>
