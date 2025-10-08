@@ -12,7 +12,9 @@
     {% if attachments %}
         <div class="attachments">
             {% for attachment in attachments %}
-                {% with {download: attachment} %}{{ block('download_component') }}{% endwith %}
+                <div class="attachment">
+                    {% with {download: attachment} %}{{ block('download_component') }}{% endwith %}
+                </div>
             {% endfor %}
         </div>
     {% endif %}
